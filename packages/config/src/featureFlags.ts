@@ -1,41 +1,39 @@
 // ─────────────────────────────────────────────────────────────
 // LOVE — Feature Flags
 // ─────────────────────────────────────────────────────────────
-// Centralized feature flag management.
-// All feature toggles should be defined here.
-// In the future, this can be backed by a remote feature
-// flag service (LaunchDarkly, Statsig, etc.).
+// Centralized feature flag management. Every toggle is defined here
+// and defaults to OFF (secure by default). In the future this can be
+// backed by a remote flag service without changing call sites.
 // ─────────────────────────────────────────────────────────────
 
+import { getServerEnv, type ServerEnv } from './env';
+
 export interface FeatureFlags {
-  /** Enable AI-powered volunteer-to-event matching */
+  /** AI-powered skill extraction and volunteer-to-event matching. */
   aiMatching: boolean;
-  /** Enable SMS notification channel */
+  /** SMS notification channel. */
   smsNotifications: boolean;
-  /** Enable push notification channel */
+  /** Push notification channel (mobile). */
   pushNotifications: boolean;
-  /** Enable multi-factor authentication */
-  mfa: boolean;
-  /** Enable OAuth login methods */
+  /** Passwordless magic-link sign-in. */
+  magicLink: boolean;
+  /** OAuth sign-in (Google, Apple, Microsoft). */
   oauth: boolean;
-  /** Enable mobile app API endpoints */
+  /** Multi-factor authentication (TOTP). */
+  mfa: boolean;
+  /** API surface consumed by the mobile app. */
   mobileApi: boolean;
 }
 
-function flag(envVar: string): boolean {
-  if (typeof process !== 'undefined' && process.env) {
-    return process.env[envVar] === 'true';
-  }
-  return false;
-}
-
-export function getFeatureFlags(): FeatureFlags {
+export function getFeatureFlags(env: ServerEnv = getServerEnv()): FeatureFlags {
   return {
-    aiMatching: flag('FEATURE_AI_MATCHING'),
-    smsNotifications: flag('FEATURE_SMS_NOTIFICATIONS'),
-    pushNotifications: flag('FEATURE_PUSH_NOTIFICATIONS'),
-    mfa: flag('FEATURE_MFA'),
-    oauth: flag('FEATURE_OAUTH'),
-    mobileApi: flag('FEATURE_MOBILE_API'),
+    // AI matching additionally requires a configured provider.
+    aiMatching: env.FEATURE_AI_MATCHING && env.AI_PROVIDER !== 'none',
+    smsNotifications: env.FEATURE_SMS_NOTIFICATIONS,
+    pushNotifications: env.FEATURE_PUSH_NOTIFICATIONS,
+    magicLink: env.FEATURE_MAGIC_LINK,
+    oauth: env.FEATURE_OAUTH,
+    mfa: env.FEATURE_MFA,
+    mobileApi: env.FEATURE_MOBILE_API,
   };
 }

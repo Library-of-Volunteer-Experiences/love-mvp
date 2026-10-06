@@ -2,30 +2,21 @@
   "expo": {
     "name": "LOVE Mobile",
     "slug": "love-mobile",
-    "version": "1.0.0",
+    "version": "0.1.0",
+    "scheme": "love",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "userInterfaceStyle": "automatic",
+    "platforms": ["ios", "android"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "gov.fannincountyga.love"
     },
     "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      }
+      "package": "gov.fannincountyga.love"
     },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    },
-    "scheme": "love"
+    "plugins": ["expo-router"],
+    "experiments": {
+      "typedRoutes": true
+    }
   }
 }

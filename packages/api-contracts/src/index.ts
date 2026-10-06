@@ -1,104 +1,148 @@
 // ─────────────────────────────────────────────────────────────
 // LOVE — API Contracts
 // ─────────────────────────────────────────────────────────────
-// Shared API request/response type definitions.
-// Both the web and mobile apps import from this package
-// to ensure type-safe API communication.
+// The wire format between clients (web browser, mobile app) and
+// the web app's server (route handlers / server actions).
 //
-// When the mobile app is developed, it will use these same
-// contracts to communicate with the backend, ensuring
-// consistency across platforms.
+// - Request types are inferred from @love/validation schemas, so the
+//   type a client sends and the schema the server validates with can
+//   never drift apart.
+// - Response types are built from @love/shared models.
+// - Nothing here depends on a backend provider: swapping Convex for
+//   Supabase does not change the API the mobile app talks to.
 // ─────────────────────────────────────────────────────────────
 
 import type {
-  Volunteer,
-  Nonprofit,
   Event,
+  Nonprofit,
   OpportunityMatch,
+  UserRole,
   UserSession,
+  Volunteer,
 } from '@love/shared';
+import type {
+  CreateEventInput,
+  CreateNonprofitInput,
+  CreateVolunteerInput,
+  MagicLinkRequestInput,
+  MfaCodeInput,
+  PaginationInput,
+  ResetPasswordInput,
+  SignInInput,
+  SignUpInput,
+  UpdateEventInput,
+  UpdateNonprofitInput,
+  UpdateVolunteerInput,
+} from '@love/validation';
+
+/** Bump on breaking changes; mobile clients send it as `X-API-Version`. */
+export const API_VERSION = '1' as const;
 
 // ─────────────────────────────────────────────────────────────
-// Generic API Response Wrapper
+// Envelope
 // ─────────────────────────────────────────────────────────────
 
-export interface ApiResponse<T> {
-  success: boolean;
-  data?: T;
-  error?: ApiError;
-}
+export type ApiErrorCode =
+  | 'VALIDATION_FAILED'
+  | 'UNAUTHENTICATED'
+  | 'MFA_REQUIRED'
+  | 'FORBIDDEN'
+  | 'NOT_FOUND'
+  | 'CONFLICT'
+  | 'RATE_LIMITED'
+  | 'PAYLOAD_TOO_LARGE'
+  | 'INTERNAL_ERROR';
 
 export interface ApiError {
-  code: string;
+  code: ApiErrorCode;
+  /** Human-readable, safe to display. Never contains stack traces or internals. */
   message: string;
-  details?: Record<string, string[]>;
+  /** Field-level validation messages, keyed by field path. */
+  fieldErrors?: Record<string, string[]>;
+  /** Correlation ID to quote when contacting support. */
+  requestId?: string;
 }
 
-export interface PaginatedResponse<T> {
-  success: boolean;
-  data: T[];
-  pagination: {
-    total: number;
-    page: number;
-    pageSize: number;
-    hasMore: boolean;
-  };
+export type ApiResponse<T> = { success: true; data: T } | { success: false; error: ApiError };
+
+export interface Paginated<T> {
+  items: T[];
+  hasMore: boolean;
+  nextCursor?: string;
 }
 
-// ─────────────────────────────────────────────────────────────
-// Auth API Contracts
-// ─────────────────────────────────────────────────────────────
+export type PaginatedResponse<T> = ApiResponse<Paginated<T>>;
 
-export type SignUpResponse = ApiResponse<UserSession>;
-export type SignInResponse = ApiResponse<UserSession>;
-export type SessionResponse = ApiResponse<UserSession | null>;
+export type PaginationQuery = PaginationInput & { cursor?: string };
 
 // ─────────────────────────────────────────────────────────────
-// Volunteer API Contracts
+// Public session shape (never includes tokens — those live in
+// HttpOnly cookies on web or SecureStore on mobile)
 // ─────────────────────────────────────────────────────────────
 
-export type GetVolunteerResponse = ApiResponse<Volunteer>;
+export type PublicSession = Pick<UserSession, 'userId' | 'role' | 'memberships' | 'expiresAt'> & {
+  roleLabel: string;
+};
+
+// ─────────────────────────────────────────────────────────────
+// Auth
+// ─────────────────────────────────────────────────────────────
+
+export type SignUpRequest = SignUpInput;
+export type SignInRequest = SignInInput;
+export type MagicLinkRequest = MagicLinkRequestInput;
+export type ResetPasswordRequest = ResetPasswordInput;
+export type MfaVerifyRequest = MfaCodeInput & { challengeId: string };
+
+export type SignInResponse = ApiResponse<
+  | { status: 'authenticated'; session: PublicSession }
+  | { status: 'mfa_required'; challengeId: string }
+>;
+export type SessionResponse = ApiResponse<PublicSession | null>;
+
+// ─────────────────────────────────────────────────────────────
+// Volunteers
+// ─────────────────────────────────────────────────────────────
+
+export type CreateVolunteerRequest = CreateVolunteerInput;
+export type UpdateVolunteerRequest = UpdateVolunteerInput;
+export type VolunteerResponse = ApiResponse<Volunteer>;
 export type ListVolunteersResponse = PaginatedResponse<Volunteer>;
-export type CreateVolunteerResponse = ApiResponse<Volunteer>;
-export type UpdateVolunteerResponse = ApiResponse<Volunteer>;
 
 // ─────────────────────────────────────────────────────────────
-// Nonprofit API Contracts
+// Nonprofits
 // ─────────────────────────────────────────────────────────────
 
-export type GetNonprofitResponse = ApiResponse<Nonprofit>;
+export type CreateNonprofitRequest = CreateNonprofitInput;
+export type UpdateNonprofitRequest = UpdateNonprofitInput;
+export type NonprofitResponse = ApiResponse<Nonprofit>;
 export type ListNonprofitsResponse = PaginatedResponse<Nonprofit>;
-export type CreateNonprofitResponse = ApiResponse<Nonprofit>;
-export type UpdateNonprofitResponse = ApiResponse<Nonprofit>;
 
 // ─────────────────────────────────────────────────────────────
-// Event API Contracts
+// Events
 // ─────────────────────────────────────────────────────────────
 
-export type GetEventResponse = ApiResponse<Event>;
+export type CreateEventRequest = CreateEventInput;
+export type UpdateEventRequest = UpdateEventInput;
+export type EventResponse = ApiResponse<Event>;
 export type ListEventsResponse = PaginatedResponse<Event>;
-export type CreateEventResponse = ApiResponse<Event>;
-export type UpdateEventResponse = ApiResponse<Event>;
 
 // ─────────────────────────────────────────────────────────────
-// Match API Contracts
+// Matches
 // ─────────────────────────────────────────────────────────────
 
-export type GetMatchResponse = ApiResponse<OpportunityMatch>;
+export type MatchResponse = ApiResponse<OpportunityMatch>;
 export type ListMatchesResponse = PaginatedResponse<OpportunityMatch>;
+export type RespondToMatchRequest = { decision: 'accepted' | 'declined' };
 
 // ─────────────────────────────────────────────────────────────
-// Health Check
+// Health (no internals exposed)
 // ─────────────────────────────────────────────────────────────
 
 export interface HealthCheckResponse {
-  status: 'ok' | 'degraded' | 'down';
+  status: 'ok' | 'degraded';
   version: string;
   timestamp: string;
-  services: {
-    database: 'connected' | 'disconnected';
-    auth: 'connected' | 'disconnected';
-    storage: 'connected' | 'disconnected';
-    notifications: 'connected' | 'disconnected';
-  };
 }
+
+export type { UserRole };

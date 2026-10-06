@@ -8,6 +8,13 @@
 // across web, mobile, and backend packages.
 // ─────────────────────────────────────────────────────────────
 
+import type {
+  MATCH_STATUS,
+  NONPROFIT_MEMBER_ROLES,
+  NOTIFICATION_CHANNELS,
+  USER_ROLES,
+} from './constants';
+
 /**
  * Represents a volunteer user on the LOVE platform.
  *
@@ -197,25 +204,53 @@ export interface Availability {
   endTime: string;
 }
 
-export type MatchStatus =
-  | 'pending'
-  | 'accepted'
-  | 'declined'
-  | 'completed'
-  | 'cancelled';
+export type MatchStatus = (typeof MATCH_STATUS)[number];
 
 // ─────────────────────────────────────────────────────────────
 // User Roles & Auth
 // ─────────────────────────────────────────────────────────────
 
-export type UserRole = 'volunteer' | 'nonprofit' | 'admin' | 'superadmin';
+export type UserRole = (typeof USER_ROLES)[number];
 
+/**
+ * Role a user holds *within* a specific nonprofit organization.
+ * A nonprofit can have many users; one user can belong to many
+ * nonprofits (e.g. a board member who helps two charities).
+ */
+export type NonprofitMemberRole = (typeof NONPROFIT_MEMBER_ROLES)[number];
+
+/**
+ * Links a user account to a nonprofit organization.
+ * Future multi-user-per-organization support is modeled here
+ * rather than as a single `nonprofitId` on the user.
+ */
+export interface OrganizationMembership {
+  id: string;
+  userId: string;
+  nonprofitId: string;
+  memberRole: NonprofitMemberRole;
+  /** ISO 8601 timestamp */
+  createdAt: string;
+  /** ISO 8601 timestamp */
+  updatedAt: string;
+}
+
+/**
+ * The authenticated principal as seen by application code.
+ * Produced by an AuthProvider; never constructed from client input.
+ */
 export interface UserSession {
   userId: string;
   email: string;
   role: UserRole;
-  /** For nonprofit users, the associated organization */
-  nonprofitId?: string;
+  /** Nonprofit memberships (empty for volunteers/admins). */
+  memberships: Pick<OrganizationMembership, 'nonprofitId' | 'memberRole'>[];
+  /** Whether the user completed an MFA challenge for this session. */
+  mfaVerified: boolean;
+  /** ISO 8601 timestamp when the session was issued (absolute timeout). */
+  issuedAt: string;
+  /** ISO 8601 timestamp of last activity (idle timeout). */
+  lastActivityAt: string;
   /** ISO 8601 expiry timestamp */
   expiresAt: string;
 }
@@ -224,7 +259,7 @@ export interface UserSession {
 // Notification Types
 // ─────────────────────────────────────────────────────────────
 
-export type NotificationChannel = 'email' | 'push' | 'sms';
+export type NotificationChannel = (typeof NOTIFICATION_CHANNELS)[number];
 
 export interface Notification {
   id: string;
@@ -253,6 +288,25 @@ export interface ExtractedSkill {
   confidence: number;
   /** Embedding vector for semantic matching */
   embedding?: number[];
+}
+
+/**
+ * AI-derived skill data for a volunteer, stored separately from the
+ * Volunteer record so that:
+ * - the user's own words (`Volunteer.skillDescription`) are never overwritten
+ * - derived data can be regenerated when the model/version changes
+ * - AI output can be deleted independently (privacy requests)
+ * Future AI integration point — see docs/architecture/ai-matching.md.
+ */
+export interface VolunteerSkillProfile {
+  volunteerId: string;
+  extractedSkills: ExtractedSkill[];
+  /** Identifier of the extraction model + prompt version that produced this */
+  extractorVersion: string;
+  /** Identifier of the embedding model that produced the vectors */
+  embeddingModel?: string;
+  /** ISO 8601 timestamp */
+  processedAt: string;
 }
 
 /**

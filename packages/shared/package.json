@@ -2,14 +2,18 @@
   "name": "@love/shared",
   "version": "0.1.0",
   "private": true,
-  "main": "./src/index.ts",
-  "types": "./src/index.ts",
+  "description": "Platform-agnostic domain models, constants, and types shared by web, mobile, and backend.",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "scripts": {
     "type-check": "tsc --noEmit",
-    "lint": "eslint src/",
-    "clean": "rm -rf dist"
+    "lint": "eslint .",
+    "clean": "rimraf .turbo"
   },
   "devDependencies": {
-    "typescript": "^5.7.0"
+    "typescript": "~6.0.3"
   }
 }

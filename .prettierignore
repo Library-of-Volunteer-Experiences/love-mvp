@@ -1,6 +1,12 @@
 node_modules/
 dist/
+build/
 .next/
 .expo/
 .turbo/
 coverage/
+package-lock.json
+next-env.d.ts
+expo-env.d.ts
+apps/mobile/ios/
+apps/mobile/android/

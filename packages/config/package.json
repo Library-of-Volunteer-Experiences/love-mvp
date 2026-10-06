@@ -2,17 +2,23 @@
   "name": "@love/config",
   "version": "0.1.0",
   "private": true,
-  "main": "./src/index.ts",
-  "types": "./src/index.ts",
+  "description": "Centralized, validated runtime configuration. The only package allowed to read process.env.",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "scripts": {
     "type-check": "tsc --noEmit",
-    "lint": "eslint src/",
-    "clean": "rm -rf dist"
+    "lint": "eslint .",
+    "clean": "rimraf .turbo"
   },
   "dependencies": {
-    "@love/shared": "*"
+    "@love/shared": "*",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
-    "typescript": "^5.7.0"
+    "@types/node": "^22.20.5",
+    "typescript": "~6.0.3"
   }
 }

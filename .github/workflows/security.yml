@@ -1,0 +1,84 @@
+name: Security
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    # Weekly, Monday 06:00 UTC — catches newly disclosed CVEs in unchanged code.
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  codeql:
+    name: Static analysis (CodeQL)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: github/codeql-action/init@v4
+        with:
+          languages: javascript-typescript
+          queries: security-extended
+      - uses: github/codeql-action/analyze@v4
+
+  secrets:
+    name: Secret scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: trufflesecurity/trufflehog@v3
+        with:
+          extra_args: --results=verified,unknown
+
+  dependency-audit:
+    name: Dependency audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci --ignore-scripts
+      # Blocking: everything that runs on the server or in the browser.
+      - name: Audit web + shared packages (fail on high)
+        run: >-
+          npm audit --omit=dev --audit-level=high
+          --workspace=@love/web --workspace=@love/backend --workspace=@love/auth
+          --workspace=@love/config --workspace=@love/shared --workspace=@love/validation
+          --workspace=@love/api-contracts --workspace=@love/ui
+      # Blocking on critical. Known high advisories in Expo's build-time CLI tooling are
+      # tracked in docs/security/dependency-policy.md and reported (non-blocking) below.
+      - name: Audit mobile (fail on critical)
+        run: npm audit --omit=dev --audit-level=critical --workspace=@love/mobile
+      - name: Report all advisories (non-blocking)
+        if: always()
+        continue-on-error: true
+        run: npm audit
+
+  dependency-review:
+    name: Dependency review
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/dependency-review-action@v5
+        with:
+          fail-on-severity: high
+          deny-licenses: AGPL-3.0, GPL-3.0
+          comment-summary-in-pr: on-failure

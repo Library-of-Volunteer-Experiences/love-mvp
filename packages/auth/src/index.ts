@@ -1,55 +1,31 @@
 // ─────────────────────────────────────────────────────────────
 // LOVE — Auth Package
 // ─────────────────────────────────────────────────────────────
-// High-level authentication utilities that consume the
-// AuthProvider interface from @love/backend.
+// Provider-independent authorization and session policy.
 //
-// This package provides:
-// - Role-based access control helpers
-// - Session management utilities
-// - Authorization guard functions
-//
-// No actual auth implementation lives here — that's in
-// @love/backend/providers/<provider>/
+// Authentication ("who are you?") is delegated to the AuthProvider
+// interface in @love/backend. This package answers "may you do
+// this?" and enforces session rules — identically no matter which
+// backend provider is configured.
 // ─────────────────────────────────────────────────────────────
 
-import type { UserRole, UserSession } from '@love/shared';
-import { hasRole, type AuthConfig } from '@love/config';
+import type { UserRole } from '@love/shared';
 
-/**
- * Check if a session is valid (not expired).
- */
-export function isSessionValid(session: UserSession | null): boolean {
-  if (!session) return false;
-  return new Date(session.expiresAt) > new Date();
-}
+export * from './permissions';
+export * from './session';
+export * from './guards';
+export * from './csrf';
 
-/**
- * Authorization guard: check if a user has the required role.
- * Returns true if authorized, false otherwise.
- */
-export function authorize(
-  session: UserSession | null,
-  requiredRole: UserRole,
-  config: AuthConfig
-): boolean {
-  if (!session || !isSessionValid(session)) return false;
-  return hasRole(session.role, requiredRole, config);
-}
+export type { UserRole, UserSession, NonprofitMemberRole } from '@love/shared';
+export { getAuthConfig, type AuthConfig, type AuthMethod } from '@love/config';
 
-/**
- * Get a display-friendly role name.
- */
+const ROLE_DISPLAY_NAMES: Record<UserRole, string> = {
+  volunteer: 'Volunteer',
+  nonprofit: 'Nonprofit Organization',
+  admin: 'Administrator',
+  superadmin: 'Super Administrator',
+};
+
 export function getRoleDisplayName(role: UserRole): string {
-  const names: Record<UserRole, string> = {
-    volunteer: 'Volunteer',
-    nonprofit: 'Nonprofit Organization',
-    admin: 'Administrator',
-    superadmin: 'Super Administrator',
-  };
-  return names[role];
+  return ROLE_DISPLAY_NAMES[role];
 }
-
-// Re-export commonly used auth types
-export type { UserRole, UserSession } from '@love/shared';
-export { hasRole, createAuthConfig, type AuthConfig, type AuthMethod } from '@love/config';

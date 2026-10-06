@@ -1,15 +1,18 @@
 // ─────────────────────────────────────────────────────────────
-// LOVE — UI Components
+// LOVE — Shared UI Components (shadcn/ui, new-york style)
 // ─────────────────────────────────────────────────────────────
-// Shared UI components (shadcn/ui based)
+// Add components with the shadcn CLI from apps/web:
+//   npx shadcn@latest add <component>
+// The monorepo-aware CLI writes them into packages/ui/src/components.
+//
+// Only generic primitives belong here. Business-specific
+// components (VolunteerCard, EventForm, ...) live in the apps.
 // ─────────────────────────────────────────────────────────────
 
-import * as React from 'react';
-
-// Stubs for components that will be populated by shadcn/ui
-export const Button = (props: React.ButtonHTMLAttributes<HTMLButtonElement>) => <button {...props} />;
-export const Card = (props: React.HTMLAttributes<HTMLDivElement>) => <div {...props} />;
-export const Input = (props: React.InputHTMLAttributes<HTMLInputElement>) => <input {...props} />;
-export const Textarea = (props: React.TextareaHTMLAttributes<HTMLTextAreaElement>) => <textarea {...props} />;
-export const Dialog = (props: React.HTMLAttributes<HTMLDivElement>) => <div {...props} />;
-export const Badge = (props: React.HTMLAttributes<HTMLSpanElement>) => <span {...props} />;
+export * from './components/badge';
+export * from './components/button';
+export * from './components/card';
+export * from './components/dialog';
+export * from './components/input';
+export * from './components/textarea';
+export { cn } from './lib/utils';

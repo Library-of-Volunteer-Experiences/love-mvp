@@ -6,15 +6,13 @@ export const APP_NAME = 'LOVE' as const;
 export const APP_FULL_NAME = 'Library of Volunteer Experiences' as const;
 export const APP_CLIENT = 'Fannin County, Georgia' as const;
 
+/** Platform-level roles. Single source of truth for the UserRole type. */
 export const USER_ROLES = ['volunteer', 'nonprofit', 'admin', 'superadmin'] as const;
 
-export const MATCH_STATUS = [
-  'pending',
-  'accepted',
-  'declined',
-  'completed',
-  'cancelled',
-] as const;
+/** Roles a user can hold inside one nonprofit organization. */
+export const NONPROFIT_MEMBER_ROLES = ['owner', 'manager', 'member'] as const;
+
+export const MATCH_STATUS = ['pending', 'accepted', 'declined', 'completed', 'cancelled'] as const;
 
 export const NOTIFICATION_CHANNELS = ['email', 'push', 'sms'] as const;
 

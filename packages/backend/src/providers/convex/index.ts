@@ -1,16 +1,20 @@
 // ─────────────────────────────────────────────────────────────
-// LOVE — Convex Provider Stubs
+// LOVE — Convex provider (initial target; NOT YET IMPLEMENTED)
 // ─────────────────────────────────────────────────────────────
-// These are placeholder implementations for the Convex backend.
-// They will be fully implemented when Convex is configured
-// as the active backend provider.
-//
-// To implement:
-// 1. Install convex SDK: npm install convex
-// 2. Set up Convex project: npx convex dev
-// 3. Implement each method using Convex client APIs
+// This folder is the ONLY place in the repo allowed to import the
+// `convex` SDK (enforced by ESLint). See ./README.md for the
+// implementation checklist.
 // ─────────────────────────────────────────────────────────────
 
-export { ConvexAuthProvider } from './ConvexAuthProvider';
-export { ConvexDatabaseProvider } from './ConvexDatabaseProvider';
-export { ConvexStorageProvider } from './ConvexStorageProvider';
+import type { AuthProvider } from '../../interfaces/AuthProvider';
+import type { DatabaseProvider } from '../../interfaces/DatabaseProvider';
+import type { StorageProvider } from '../../interfaces/StorageProvider';
+import { notImplemented } from '../shared/notImplemented';
+import type { BackendProviderModule } from '../types';
+
+export const convexProviders: BackendProviderModule<'convex'> = {
+  name: 'convex',
+  createAuthProvider: () => notImplemented<AuthProvider>('ConvexAuthProvider'),
+  createDatabaseProvider: () => notImplemented<DatabaseProvider>('ConvexDatabaseProvider'),
+  createStorageProvider: () => notImplemented<StorageProvider>('ConvexStorageProvider'),
+};

@@ -1,4 +1,5 @@
-module.exports = {
+/** @type {import('@commitlint/types').UserConfig} */
+export default {
   extends: ['@commitlint/config-conventional'],
   rules: {
     'type-enum': [
@@ -22,7 +23,21 @@ module.exports = {
     'scope-enum': [
       1,
       'always',
-      ['web', 'mobile', 'ui', 'shared', 'backend', 'auth', 'config', 'validation', 'api', 'docs', 'ci'],
+      [
+        'web',
+        'mobile',
+        'ui',
+        'shared',
+        'backend',
+        'auth',
+        'config',
+        'validation',
+        'api-contracts',
+        'docs',
+        'ci',
+        'deps',
+        'repo',
+      ],
     ],
     'subject-case': [2, 'never', ['start-case', 'pascal-case', 'upper-case']],
     'header-max-length': [2, 'always', 100],

@@ -1,48 +1,50 @@
 // ─────────────────────────────────────────────────────────────
 // LOVE — StorageProvider Interface
 // ─────────────────────────────────────────────────────────────
-// All file storage operations MUST go through this interface.
-// Supports uploading, downloading, and managing files
-// (logos, profile photos, documents, etc.)
+// All file storage operations MUST go through this interface
+// (nonprofit logos, profile photos, documents, ...).
+//
+// SECURITY:
+// - Callers validate MIME type and size against
+//   securityConfig.allowedUploadTypes / requestSizeLimits first.
+// - Paths are generated server-side (never taken from user input) to
+//   prevent path traversal and object overwrites.
+// - Private files are only reachable via short-lived signed URLs.
 // ─────────────────────────────────────────────────────────────
 
+export type FileVisibility = 'public' | 'private';
+
 export interface UploadOptions {
-  /** Target path/key in storage */
+  /** Server-generated storage key, e.g. `nonprofits/<id>/logo.png`. */
   path: string;
-  /** File content */
-  data: Blob | Buffer | ArrayBuffer;
-  /** MIME type */
+  /** File content. Uint8Array also covers Node's Buffer. */
+  data: Blob | ArrayBuffer | Uint8Array;
   contentType: string;
-  /** Optional metadata */
+  visibility: FileVisibility;
   metadata?: Record<string, string>;
 }
 
 export interface StorageFile {
-  /** Storage path/key */
   path: string;
-  /** Public URL */
-  url: string;
-  /** File size in bytes */
+  /** Present only for public files. */
+  publicUrl?: string;
   size: number;
-  /** MIME type */
   contentType: string;
-  /** Upload timestamp */
+  visibility: FileVisibility;
+  /** ISO 8601 */
   createdAt: string;
 }
 
 export interface StorageProvider {
-  /** Upload a file */
   upload(options: UploadOptions): Promise<StorageFile>;
 
-  /** Get a public URL for a file */
-  getUrl(path: string): Promise<string>;
+  /** Public URL for a public file. Throws for private files. */
+  getPublicUrl(path: string): Promise<string>;
 
-  /** Get a signed/temporary URL for a file */
+  /** Time-limited URL. Keep `expiresInSeconds` short (<= 3600). */
   getSignedUrl(path: string, expiresInSeconds: number): Promise<string>;
 
-  /** Delete a file */
   delete(path: string): Promise<void>;
 
-  /** List files in a directory/prefix */
   list(prefix: string): Promise<StorageFile[]>;
 }

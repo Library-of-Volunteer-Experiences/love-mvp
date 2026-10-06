@@ -3,30 +3,36 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "type-check": "tsc --noEmit"
+    "lint": "eslint .",
+    "type-check": "next typegen && tsc --noEmit",
+    "clean": "rimraf .next .turbo"
   },
   "dependencies": {
-    "next": "15.0.0",
-    "react": "19.0.0",
-    "react-dom": "19.0.0",
-    "@love/shared": "*",
-    "@love/config": "*",
-    "@love/backend": "*",
-    "@love/auth": "*",
-    "@love/validation": "*",
+    "@hookform/resolvers": "^5.9.1",
     "@love/api-contracts": "*",
-    "@love/ui": "*"
+    "@love/auth": "*",
+    "@love/backend": "*",
+    "@love/config": "*",
+    "@love/shared": "*",
+    "@love/ui": "*",
+    "@love/validation": "*",
+    "@tanstack/react-query": "^5.104.1",
+    "lucide-react": "^1.50.0",
+    "next": "16.3.8",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "react-hook-form": "^7.89.0",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
-    "@types/node": "^20.0.0",
-    "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0",
-    "postcss": "^8.0.0",
-    "tailwindcss": "^3.4.0",
-    "typescript": "^5.7.0"
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^22.20.5",
+    "@types/react": "~19.2.18",
+    "@types/react-dom": "~19.2.7",
+    "tailwindcss": "^4.3.3",
+    "typescript": "~6.0.3"
   }
 }
