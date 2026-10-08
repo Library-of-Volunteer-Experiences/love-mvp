@@ -18,16 +18,16 @@ export default function Home() {
         <p className="text-2xl font-medium">{APP_FULL_NAME}</p>
       </div>
 
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md font-sans">
         <CardHeader className="justify-items-center">
           <Badge variant="secondary">
             <CircleCheck aria-hidden="true" />
             Setup complete
           </Badge>
-          <CardTitle>Repository Successfully Initialized</CardTitle>
+          <CardTitle className="font-sans">Repository Successfully Initialized</CardTitle>
           <CardDescription>{APP_CLIENT}</CardDescription>
         </CardHeader>
-        <CardContent className="text-muted-foreground">
+        <CardContent className="font-sans text-muted-foreground">
           The platform foundation is in place. Application features have not been built yet.
         </CardContent>
       </Card>

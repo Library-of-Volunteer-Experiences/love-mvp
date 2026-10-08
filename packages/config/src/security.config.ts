@@ -53,10 +53,11 @@ export function buildContentSecurityPolicy(options: {
       ...(isDev ? ["'unsafe-eval'"] : []),
     ],
     // Tailwind emits a stylesheet; inline styles are only needed by some
-    // Radix primitives for positioning.
-    'style-src': ["'self'", "'unsafe-inline'"],
+    // Radix primitives for positioning. Google Fonts are explicitly allowed
+    // so the Anek Latin and Source Serif design tokens can load safely.
+    'style-src': ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
     'img-src': ["'self'", 'blob:', 'data:'],
-    'font-src': ["'self'"],
+    'font-src': ["'self'", 'https://fonts.gstatic.com', 'data:'],
     'connect-src': ["'self'", ...connectSrc, ...(isDev ? ['ws:'] : [])],
     'object-src': ["'none'"],
     'base-uri': ["'self'"],
