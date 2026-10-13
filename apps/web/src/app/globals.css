@@ -1,2 +1,7 @@
 /* Design tokens, Tailwind, and base styles come from the shared UI package. */
-@import '@love/ui/globals.css';
+@import '../../../../packages/ui/src/styles/globals.css';
+
+html,
+body {
+  font-family: var(--font-sans-default);
+}
