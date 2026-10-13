@@ -1,3 +1,2 @@
 #!/bin/bash
-export PATH="/c/Program Files/Git/usr/bin:/c/Program Files/Git/bin:/c/Program Files/Git/cmd:/usr/local/bin:/usr/bin:/bin:/c/Program Files/nodejs:/c/Users/itsar/AppData/Roaming/npm:/c/Users/itsar/AppData/Local/Programs/Python/Python313:/c/Users/itsar/AppData/Local/Programs/Python/Python313/Scripts:/c/Windows/System32:/c/Windows"
 npx lint-staged
