@@ -14,5 +14,6 @@ export * from './components/button';
 export * from './components/card';
 export * from './components/dialog';
 export * from './components/input';
+export * from './components/login-05';
 export * from './components/textarea';
 export { cn } from './lib/utils';
