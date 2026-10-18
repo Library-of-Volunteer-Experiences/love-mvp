@@ -57,7 +57,7 @@ love-app/
 │   ├── architecture/        Deep dives (backend abstraction, AI matching, accessibility, ...)
 │   ├── decisions/           Architecture Decision Records (ADRs)
 │   └── security/            Data classification, dependency policy, threat model
-├── .github/workflows/       CI (lint, types, build) and security (CodeQL, secrets, audit)
+├── .github/workflows/       CI (lint, types, build) and security (secrets, audit)
 ├── ARCHITECTURE.md          This file
 ├── SECURITY.md              Mandatory security rules (humans and AI agents)
 ├── CONTRIBUTING.md          How to work in this repo
@@ -244,13 +244,12 @@ targets, thick focus rings, high-contrast tokens, reduced-motion support, and pl
 
 ## 12. Tooling and quality gates
 
-| Concern     | Tool                                                                              |
-| ----------- | --------------------------------------------------------------------------------- |
-| Monorepo    | npm workspaces + Turborepo                                                        |
-| Language    | TypeScript 6 (strict, `noUncheckedIndexedAccess`)                                 |
-| Lint        | ESLint 9 flat config (root `eslint.config.mjs`), incl. architecture rules         |
-| Format      | Prettier (+ Tailwind class sorting)                                               |
-| Git hooks   | Husky: pre-commit → lint-staged; commit-msg → commitlint; pre-push → type-check   |
-| Commits     | Conventional Commits (`commitlint.config.mjs`)                                    |
-| CI          | `ci.yml`: format, lint, type-check, build (web + iOS/Android bundles), commitlint |
-| Security CI | `security.yml`: CodeQL, TruffleHog, npm audit, dependency review; Dependabot      |
+| Concern     | Tool                                                                      |
+| ----------- | ------------------------------------------------------------------------- |
+| Monorepo    | npm workspaces + Turborepo                                                |
+| Language    | TypeScript 6 (strict, `noUncheckedIndexedAccess`)                         |
+| Lint        | ESLint 9 flat config (root `eslint.config.mjs`), incl. architecture rules |
+| Format      | Prettier (+ Tailwind class sorting)                                       |
+| Git hooks   | Husky: pre-commit → lint-staged (ESLint fix + Prettier on staged files)   |
+| CI          | `ci.yml`: format, lint, type-check, build (web + iOS/Android bundles)     |
+| Security CI | `security.yml`: TruffleHog secret scan, npm audit; Dependabot             |

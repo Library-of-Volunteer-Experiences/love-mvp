@@ -21,21 +21,9 @@ that file existed, run `git add --renormalize .`.
 1. **Branch** from `main`: `feat/volunteer-signup`, `fix/event-timezone`, `docs/adr-0007`.
 2. **Make focused changes.** One concern per PR.
 3. **Verify locally:** `npm run verify` (format, lint, type-check, build).
-4. **Commit** using [Conventional Commits](https://www.conventionalcommits.org/) — enforced by
-   commitlint:
-
-   ```
-   feat(web): add volunteer availability picker
-   fix(validation): accept ZIP+4 codes
-   security(auth): shorten magic-link lifetime
-   docs(decisions): add ADR 0007 on SMS provider
-   ```
-
-   Types: `feat fix docs style refactor perf test build ci chore revert security`.
-   Scopes: `web mobile ui shared backend auth config validation api-contracts docs ci deps repo`.
-
+4. **Commit** with a short message that says what changed (no enforced format).
 5. **Open a PR** and complete the template's security and accessibility checklists.
-6. **CI must pass**: lint, type check, build, CodeQL, secret scan, dependency audit.
+6. **CI must pass**: format, lint, type check, build, secret scan, dependency audit.
 7. **Review:** one approval required; two for security-sensitive files (`packages/auth`,
    `packages/config/src/{auth,security}.config.ts`, `apps/web/src/proxy.ts`, provider
    implementations).
@@ -45,8 +33,6 @@ that file existed, run `git add --renormalize .`.
 | Hook         | Runs                                                     |
 | ------------ | -------------------------------------------------------- |
 | `pre-commit` | `lint-staged`: ESLint `--fix` + Prettier on staged files |
-| `commit-msg` | commitlint                                               |
-| `pre-push`   | `npm run type-check`                                     |
 
 Do not bypass hooks with `--no-verify`.
 

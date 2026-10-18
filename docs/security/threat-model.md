@@ -34,7 +34,7 @@ built.
 | Fake nonprofits / events                    | `nonprofits:verify` permission for admins; events from unverified nonprofits hidden (future)    |
 | PII leakage via logs                        | Logging rules (SECURITY.md §8); masking in dev providers; audit events reference IDs only       |
 | Secrets in repo                             | `.gitignore`; TruffleHog in CI; env validation                                                  |
-| Vulnerable / malicious dependency           | npm audit, Dependabot, dependency review, lockfile + `npm ci`                                   |
+| Vulnerable / malicious dependency           | npm audit, Dependabot, lockfile + `npm ci`                                                      |
 | Clickjacking                                | `X-Frame-Options: DENY`, CSP `frame-ancestors 'none'`                                           |
 | Misconfigured production                    | Zod env validation rejects missing credentials and dev-only providers when `APP_ENV=production` |
 | AI prompt injection / data leakage (future) | Skill text treated as data only; no PII sent; output validated (ai-matching.md)                 |

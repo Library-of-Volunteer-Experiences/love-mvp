@@ -54,7 +54,7 @@ Run from the repository root:
 | Mobile   | Expo SDK 57, React Native, Expo Router, TypeScript                                                                     |
 | Monorepo | npm workspaces + Turborepo                                                                                             |
 | Backend  | Provider-agnostic interfaces; Convex planned first, Supabase/Firebase/others swappable by config                       |
-| Quality  | ESLint, Prettier, Husky, lint-staged, Commitlint, GitHub Actions (CI + CodeQL + secret scan + audit)                   |
+| Quality  | ESLint, Prettier, Husky, lint-staged, GitHub Actions (CI + secret scan + audit)                                        |
 
 ## Repository layout
 

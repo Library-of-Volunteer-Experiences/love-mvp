@@ -215,15 +215,15 @@ Additional rules for AI agents:
 
 ## 11. How these rules are enforced
 
-| Rule                                       | Enforcement                                                                      |
-| ------------------------------------------ | -------------------------------------------------------------------------------- |
-| Provider SDKs only in the provider layer   | ESLint `no-restricted-imports` (`eslint.config.mjs`)                             |
-| `process.env` only in `@love/config`       | ESLint `no-restricted-properties`                                                |
-| Server packages not in mobile              | ESLint `no-restricted-imports` (mobile override)                                 |
-| No `dangerouslySetInnerHTML`, `eval`       | ESLint `react/no-danger`, `no-eval`, `no-implied-eval`, `no-new-func`            |
-| Env vars valid; prod fully configured      | Zod schema in `packages/config/src/env.ts` (fails at startup)                    |
-| Deny-by-default RBAC                       | `packages/auth/src/permissions.ts` + guards                                      |
-| CSP + security headers                     | `apps/web/src/proxy.ts`, `apps/web/next.config.ts`                               |
-| Lint, types, build                         | Husky pre-commit/pre-push + CI (`.github/workflows/ci.yml`)                      |
-| Secrets, SAST, vulnerable deps             | CI (`.github/workflows/security.yml`): TruffleHog, CodeQL, npm audit, Dependabot |
-| Human review of security-sensitive changes | PR template security checklist                                                   |
+| Rule                                       | Enforcement                                                              |
+| ------------------------------------------ | ------------------------------------------------------------------------ |
+| Provider SDKs only in the provider layer   | ESLint `no-restricted-imports` (`eslint.config.mjs`)                     |
+| `process.env` only in `@love/config`       | ESLint `no-restricted-properties`                                        |
+| Server packages not in mobile              | ESLint `no-restricted-imports` (mobile override)                         |
+| No `dangerouslySetInnerHTML`, `eval`       | ESLint `react/no-danger`, `no-eval`, `no-implied-eval`, `no-new-func`    |
+| Env vars valid; prod fully configured      | Zod schema in `packages/config/src/env.ts` (fails at startup)            |
+| Deny-by-default RBAC                       | `packages/auth/src/permissions.ts` + guards                              |
+| CSP + security headers                     | `apps/web/src/proxy.ts`, `apps/web/next.config.ts`                       |
+| Lint, types, build                         | Husky pre-commit + CI (`.github/workflows/ci.yml`)                       |
+| Secrets, SAST, vulnerable deps             | CI (`.github/workflows/security.yml`): TruffleHog, npm audit, Dependabot |
+| Human review of security-sensitive changes | PR template security checklist                                           |
