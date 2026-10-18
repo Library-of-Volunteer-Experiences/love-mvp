@@ -1,5 +1,12 @@
 # LOVE documentation
 
+## Product — `product/`
+
+- [Vision](product/vision.md) — what LOVE is, who it's for, and the post-MVP roadmap
+- [MVP requirements](product/mvp-requirements.md) — what's in, what's out, decisions log, open questions
+- [Pages](product/pages.md) — every page: what users see and what each click does
+- [Design inventory](product/design-inventory.md) — every component to design, where it's used, decisions needed
+
 ## Architecture — `architecture/`
 
 - [Backend abstraction](architecture/backend-abstraction.md) — layers, request recipe, interface rules
