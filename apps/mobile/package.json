@@ -18,7 +18,7 @@
     "@love/api-contracts": "*",
     "@love/shared": "*",
     "@love/validation": "*",
-    "expo": "~57.0.26",
+    "expo": "~57.0.30",
     "expo-constants": "~57.0.20",
     "expo-linking": "~57.0.11",
     "expo-router": "~57.0.24",
