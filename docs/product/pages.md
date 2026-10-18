@@ -16,26 +16,26 @@ clicks something.
 
 ## Site map
 
-| Route                                  | Page                                                     | Who can see it                     |
-| -------------------------------------- | -------------------------------------------------------- | ---------------------------------- |
-| `/`                                    | Landing page (logged out) **or** Feed (logged in)        | Everyone                           |
-| `/signup`                              | Create account                                           | Logged out                         |
-| `/login`                               | Log in                                                   | Logged out                         |
-| `/onboarding`                          | Onboarding steps                                         | Logged in                          |
-| `/events/[eventId]`                    | Event page: limited (logged out) **or** full (logged in) | Everyone                           |
-| `/nonprofits/[nonprofitId]`            | Nonprofit page                                           | Everyone                           |
-| `/nonprofits/new`                      | Create a nonprofit (the **+** button)                    | Logged in                          |
-| `/nonprofits/[nonprofitId]/manage`     | Nonprofit dashboard                                      | Members only                       |
-| `/nonprofits/[nonprofitId]/events/new` | Create event                                             | Members only                       |
-| `/events/[eventId]/edit`               | Edit event                                               | Members of that nonprofit          |
-| `/events/[eventId]/signups`            | Who signed up + who loved it                             | Members of that nonprofit          |
-| `/invite/[token]`                      | Accept an invite to join a nonprofit                     | Anyone with the link (must log in) |
-| `/my-signups`                          | My sign-ups                                              | Logged in                          |
-| `/following`                           | Nonprofits I follow                                      | Logged in                          |
-| `/notifications`                       | All notifications                                        | Logged in                          |
-| `/search`                              | Search results                                           | Logged in                          |
-| `/settings`                            | Profile and preferences                                  | Logged in                          |
-| (any unknown URL)                      | Not found                                                | Everyone                           |
+| Route                                | Page                                                     | Who can see it                     |
+| ------------------------------------ | -------------------------------------------------------- | ---------------------------------- |
+| `/`                                  | Landing page (logged out) **or** Feed (logged in)        | Everyone                           |
+| `/signup`                            | Create account                                           | Logged out                         |
+| `/login`                             | Log in                                                   | Logged out                         |
+| `/onboarding`                        | Onboarding steps                                         | Logged in                          |
+| `/events/[event]`                    | Event page: limited (logged out) **or** full (logged in) | Everyone                           |
+| `/nonprofits/[nonprofit]`            | Nonprofit page                                           | Everyone                           |
+| `/nonprofits/new`                    | Create a nonprofit (the **+** button)                    | Logged in                          |
+| `/nonprofits/[nonprofit]/manage`     | Nonprofit dashboard                                      | Members only                       |
+| `/nonprofits/[nonprofit]/events/new` | Create event                                             | Members only                       |
+| `/events/[event]/edit`               | Edit event                                               | Members of that nonprofit          |
+| `/events/[event]/signups`            | Who signed up + who loved it                             | Members of that nonprofit          |
+| `/invite/[token]`                    | Accept an invite to join a nonprofit                     | Anyone with the link (must log in) |
+| `/my-signups`                        | My sign-ups                                              | Logged in                          |
+| `/following`                         | Nonprofits I follow                                      | Logged in                          |
+| `/notifications`                     | All notifications                                        | Logged in                          |
+| `/search`                            | Search results                                           | Logged in                          |
+| `/settings`                          | Profile and preferences                                  | Logged in                          |
+| (any unknown URL)                    | Not found                                                | Everyone                           |
 
 **Present on every page:**
 
@@ -66,12 +66,12 @@ clicks something.
 
 **What they can click**
 
-| Click                             | Result                                           |
-| --------------------------------- | ------------------------------------------------ |
-| Log in / Sign up (navbar or hero) | Go to `/login` or `/signup`                      |
-| A preview card                    | Open `/events/[eventId]` in its **limited** form |
-| The nonprofit name on a card      | Open `/nonprofits/[nonprofitId]`                 |
-| The ❤️ on a card                  | Prompt: "Sign up to love events"                 |
+| Click                             | Result                                         |
+| --------------------------------- | ---------------------------------------------- |
+| Log in / Sign up (navbar or hero) | Go to `/login` or `/signup`                    |
+| A preview card                    | Open `/events/[event]` in its **limited** form |
+| The nonprofit name on a card      | Open `/nonprofits/[nonprofit]`                 |
+| The ❤️ on a card                  | Prompt: "Sign up to love events"               |
 
 ---
 
@@ -109,8 +109,8 @@ clicks something.
 
 | Click                    | Result                                                                                        |
 | ------------------------ | --------------------------------------------------------------------------------------------- |
-| Nonprofit name on a card | `/nonprofits/[nonprofitId]`                                                                   |
-| The card itself          | `/events/[eventId]` (full version)                                                            |
+| Nonprofit name on a card | `/nonprofits/[nonprofit]`                                                                     |
+| The card itself          | `/events/[event]` (full version)                                                              |
 | ❤️                       | Toggles love: count +1/−1 instantly, and the feed learns from it                              |
 | Sidebar search (Enter)   | `/search?q=…`                                                                                 |
 | Distance / tag filters   | Feed updates in place                                                                         |
@@ -186,7 +186,7 @@ Everything can be changed later in `/settings`.
 
 ---
 
-## `/events/[eventId]` Event page, limited (logged out)
+## `/events/[event]` Event page, limited (logged out)
 
 **What they see:**
 
@@ -206,11 +206,11 @@ Everything can be changed later in `/settings`.
 | Click            | Result                                                |
 | ---------------- | ----------------------------------------------------- |
 | Sign up / Log in | Goes there, and returns them to this event afterwards |
-| Nonprofit name   | `/nonprofits/[nonprofitId]`                           |
+| Nonprofit name   | `/nonprofits/[nonprofit]`                             |
 
 ---
 
-## `/events/[eventId]` Event page, full (logged in)
+## `/events/[event]` Event page, full (logged in)
 
 **What they see**
 
@@ -236,7 +236,7 @@ Everything can be changed later in `/settings`.
 | ❤️                                                   | Toggles love                                                                                              |
 | Follow / Following                                   | Toggles follow on the nonprofit                                                                           |
 | Cancel my sign-up                                    | Confirmation ("Are you sure?") → cancels, frees the spot, and notifies the nonprofit's members            |
-| Edit event / See sign-ups (members only)             | `/events/[eventId]/edit` or `/events/[eventId]/signups`                                                   |
+| Edit event / See sign-ups (members only)             | `/events/[event]/edit` or `/events/[event]/signups`                                                       |
 
 **Sign-up popup**
 
@@ -255,7 +255,7 @@ Everything can be changed later in `/settings`.
 
 ---
 
-## `/nonprofits/[nonprofitId]` Nonprofit page
+## `/nonprofits/[nonprofit]` Nonprofit page
 
 **What they see (everyone):**
 
@@ -278,7 +278,7 @@ Everything can be changed later in `/settings`.
 
 | Click         | Result                                       |
 | ------------- | -------------------------------------------- |
-| An event card | `/events/[eventId]`                          |
+| An event card | `/events/[event]`                            |
 | Follow        | Toggles follow (logged out: prompts sign-up) |
 | Website link  | Opens the nonprofit's site in a new tab      |
 
@@ -306,7 +306,7 @@ Everything can be changed later in `/settings`.
 
 ---
 
-## `/nonprofits/[nonprofitId]/manage` Nonprofit dashboard (members)
+## `/nonprofits/[nonprofit]/manage` Nonprofit dashboard (members)
 
 **Who can see it:** members only. Everyone else gets "You don't have access."
 
@@ -329,7 +329,7 @@ Everything can be changed later in `/settings`.
 
 ---
 
-## `/nonprofits/[nonprofitId]/events/new` and `/events/[eventId]/edit` Create / edit event
+## `/nonprofits/[nonprofit]/events/new` and `/events/[event]/edit` Create / edit event
 
 **What they see** (one form; the edit version comes pre-filled):
 
@@ -349,7 +349,7 @@ Everything can be changed later in `/settings`.
 
 ---
 
-## `/events/[eventId]/signups` Who signed up (members)
+## `/events/[event]/signups` Who signed up (members)
 
 **What they see:** for each role and shift, a list of volunteers with:
 

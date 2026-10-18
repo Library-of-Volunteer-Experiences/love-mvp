@@ -26,6 +26,7 @@ AP-Students repo):
 | `nonprofits/`    | Nonprofit pages and dashboard                           |
 | `onboarding/`    | Onboarding steps                                        |
 | `notifications/` | Bell and notification list                              |
+| `account/`       | My sign-ups items and settings forms                    |
 
 ---
 
@@ -289,7 +290,7 @@ Draft versions already exist: `login-05`, `signup-05`.
 
 ### Event page header
 
-- **Used on:** `/events/[eventId]`.
+- **Used on:** `/events/[event]`.
 - **Contains:** cover photo, name, nonprofit (link + Follow), date, address, love button.
 - **Decisions needed:**
   - Is the cover a full-width banner or a contained image?
@@ -344,7 +345,7 @@ Draft versions already exist: `login-05`, `signup-05`.
 
 ### Limited event page box (logged out)
 
-- **Used on:** `/events/[eventId]` (logged out).
+- **Used on:** `/events/[event]` (logged out).
 - **Contains:** "Sign up or log in to see the address and volunteer" with buttons.
 - **Decisions needed:** wording and how prominent it is.
 
@@ -373,7 +374,7 @@ Draft versions already exist: `login-05`, `signup-05`.
 
 ### Sign-ups table (members)
 
-- **Used on:** `/events/[eventId]/signups`.
+- **Used on:** `/events/[event]/signups`.
 - **Contains:** per role/shift: name, email, phone (if consented), notes, signed-up time.
 - **Decisions needed:**
   - A table or cards?
@@ -390,7 +391,7 @@ Draft versions already exist: `login-05`, `signup-05`.
 
 ### Nonprofit page header
 
-- **Used on:** `/nonprofits/[nonprofitId]`.
+- **Used on:** `/nonprofits/[nonprofit]`.
 - **Contains:**
   - logo
   - official name
@@ -441,7 +442,7 @@ Draft versions already exist: `login-05`, `signup-05`.
 
 ### Nonprofit dashboard
 
-- **Used on:** `/nonprofits/[nonprofitId]/manage`.
+- **Used on:** `/nonprofits/[nonprofit]/manage`.
 - **Contains:**
   - events list (with filled / total spots, love count, Edit, See sign-ups, Delete)
   - edit-info form
