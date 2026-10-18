@@ -54,7 +54,7 @@ Run from the repository root:
 | Mobile   | Expo SDK 57, React Native, Expo Router, TypeScript                                                                     |
 | Monorepo | npm workspaces + Turborepo                                                                                             |
 | Backend  | Provider-agnostic interfaces; Convex planned first, Supabase/Firebase/others swappable by config                       |
-| Quality  | ESLint, Prettier, Husky, lint-staged, Commitlint, GitHub Actions (CI + CodeQL + secret scan + audit)                   |
+| Quality  | ESLint, Prettier, Husky, lint-staged, GitHub Actions (CI + secret scan + audit)                                        |
 
 ## Repository layout
 
@@ -67,7 +67,7 @@ packages/api-contracts  API request/response types (web + mobile)
 packages/config         Validated env + provider configuration + feature flags
 packages/auth           RBAC, session policy, CSRF helpers
 packages/backend        Provider interfaces + implementations (Convex, Supabase, Firebase)
-packages/ui             shadcn/ui component library
+apps/web/src/components Web UI components (ui/ = shadcn building blocks)
 docs/                   Architecture deep dives, ADRs, security docs
 ```
 

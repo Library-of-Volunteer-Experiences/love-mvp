@@ -14,7 +14,7 @@ isn't accessible isn't finished.
 ### Large click/tap targets
 
 - Interactive elements are at least **44 × 44 CSS px** (WCAG 2.5.5 AAA; 2.5.8 AA is 24px). All
-  `@love/ui` button sizes, the dialog close button, and inputs (48px) meet this.
+  The button sizes in `apps/web/src/components/ui`, the dialog close button, and inputs (48px) meet this.
 - At least 8px spacing between adjacent targets.
 - Mobile: minimum 48 × 48 dp.
 
@@ -30,7 +30,7 @@ isn't accessible isn't finished.
 - Text contrast ≥ **4.5:1** (AA); our tokens target ~7:1 (AAA) for body and muted text.
 - UI component boundaries and focus indicators ≥ 3:1.
 - `prefers-contrast: more` and an opt-in `.high-contrast` class strengthen text and borders
-  (`packages/ui/src/styles/globals.css`). Dark mode tokens are provided.
+  (`apps/web/src/app/globals.css`). Dark mode tokens are provided.
 - Never convey information by colour alone — pair with text or an icon.
 
 ### Keyboard navigation

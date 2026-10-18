@@ -41,6 +41,10 @@ recorded decisions live in [`docs/decisions/`](docs/decisions/).
 love-app/
 ├── apps/
 │   ├── web/                 Next.js 16 (App Router) — primary platform, also hosts the API
+│   │   └── src/
+│   │       ├── app/         Routes (pages) + globals.css (design tokens)
+│   │       ├── components/  ALL web components: ui/ (shadcn building blocks), auth/, …
+│   │       └── lib/         Helpers (cn, forms, query client)
 │   └── mobile/              Expo (React Native) — secondary platform, placeholder today
 ├── packages/
 │   ├── shared/              Domain models (Volunteer, Nonprofit, Event, ...) and constants
@@ -48,13 +52,12 @@ love-app/
 │   ├── api-contracts/       Request/response types between clients and the web server
 │   ├── config/              Validated env + backend/auth/notification/security config, feature flags
 │   ├── auth/                RBAC permission matrix, guards, session policy, CSRF helpers
-│   ├── backend/             Provider interfaces + factory; vendor implementations in providers/
-│   └── ui/                  shadcn/ui component library + design tokens (web)
+│   └── backend/             Provider interfaces + factory; vendor implementations in providers/
 ├── docs/
 │   ├── architecture/        Deep dives (backend abstraction, AI matching, accessibility, ...)
 │   ├── decisions/           Architecture Decision Records (ADRs)
 │   └── security/            Data classification, dependency policy, threat model
-├── .github/workflows/       CI (lint, types, build) and security (CodeQL, secrets, audit)
+├── .github/workflows/       CI (lint, types, build) and security (secrets, audit)
 ├── ARCHITECTURE.md          This file
 ├── SECURITY.md              Mandatory security rules (humans and AI agents)
 ├── CONTRIBUTING.md          How to work in this repo
@@ -71,16 +74,16 @@ There is no separate build step for packages, which keeps the feedback loop fast
                     ┌──────────┐
                     │  shared  │  ← depends on nothing
                     └────┬─────┘
-            ┌────────────┼─────────────┐
-      ┌─────▼──────┐ ┌───▼────┐   ┌────▼───┐
-      │ validation │ │ config │   │   ui   │
-      └─────┬──────┘ └───┬────┘   └────┬───┘
-   ┌────────▼──────┐  ┌──┴───────┐     │
-   │ api-contracts │  │   auth   │     │
-   └───┬───────┬───┘  │ backend  │     │
-       │       │      └────┬─────┘     │
-  ┌────▼───┐ ┌─▼───────────▼───────────▼─┐
-  │ mobile │ │            web            │
+            ┌────────────┤
+      ┌─────▼──────┐ ┌───▼────┐
+      │ validation │ │ config │
+      └─────┬──────┘ └───┬────┘
+   ┌────────▼──────┐  ┌──┴───────┐
+   │ api-contracts │  │   auth   │
+   └───┬───────┬───┘  │ backend  │
+       │       │      └────┬─────┘
+  ┌────▼───┐ ┌─▼───────────▼─────────────┐
+  │ mobile │ │  web (incl. components)   │
   └────────┘ └───────────────────────────┘
 ```
 
@@ -92,8 +95,7 @@ There is no separate build step for packages, which keeps the feedback loop fast
 | `config`        | web (server), `auth`, `backend` | — (it is the **only** package that reads `process.env`) |
 | `auth`          | web (server)                    | provider SDKs                                           |
 | `backend`       | web (server code only)          | — (only `src/providers/**` may import provider SDKs)    |
-| `ui`            | web                             | `config`, `backend`, `auth`                             |
-| **mobile**      | —                               | `backend`, `config`, `auth`, `ui` (lint-enforced)       |
+| **mobile**      | —                               | `backend`, `config`, `auth` (lint-enforced)             |
 
 ## 4. Backend abstraction strategy
 
@@ -229,7 +231,7 @@ Full design, including privacy rules and a non-AI fallback: [docs/architecture/a
   both platforms and requests on the server) and `@love/api-contracts` (request/response types).
 - React is pinned to the single version the current Expo SDK supports, so web and mobile share one
   React copy in the monorepo.
-- The UI library (`@love/ui`) is web-only (DOM + Tailwind). Mobile will get its own components that
+- The UI components (`apps/web/src/components`) are web-only (DOM + Tailwind). Mobile will get its own components that
   follow the same design tokens.
 
 Details: [docs/architecture/mobile-web.md](docs/architecture/mobile-web.md).
@@ -242,13 +244,12 @@ targets, thick focus rings, high-contrast tokens, reduced-motion support, and pl
 
 ## 12. Tooling and quality gates
 
-| Concern     | Tool                                                                              |
-| ----------- | --------------------------------------------------------------------------------- |
-| Monorepo    | npm workspaces + Turborepo                                                        |
-| Language    | TypeScript 6 (strict, `noUncheckedIndexedAccess`)                                 |
-| Lint        | ESLint 9 flat config (root `eslint.config.mjs`), incl. architecture rules         |
-| Format      | Prettier (+ Tailwind class sorting)                                               |
-| Git hooks   | Husky: pre-commit → lint-staged; commit-msg → commitlint; pre-push → type-check   |
-| Commits     | Conventional Commits (`commitlint.config.mjs`)                                    |
-| CI          | `ci.yml`: format, lint, type-check, build (web + iOS/Android bundles), commitlint |
-| Security CI | `security.yml`: CodeQL, TruffleHog, npm audit, dependency review; Dependabot      |
+| Concern     | Tool                                                                      |
+| ----------- | ------------------------------------------------------------------------- |
+| Monorepo    | npm workspaces + Turborepo                                                |
+| Language    | TypeScript 6 (strict, `noUncheckedIndexedAccess`)                         |
+| Lint        | ESLint 9 flat config (root `eslint.config.mjs`), incl. architecture rules |
+| Format      | Prettier (+ Tailwind class sorting)                                       |
+| Git hooks   | Husky: pre-commit → lint-staged (ESLint fix + Prettier on staged files)   |
+| CI          | `ci.yml`: format, lint, type-check, build (web + iOS/Android bundles)     |
+| Security CI | `security.yml`: TruffleHog secret scan, npm audit; Dependabot             |

@@ -1,6 +1,7 @@
 import { CircleCheck, Heart } from 'lucide-react';
 import { APP_CLIENT, APP_FULL_NAME, APP_NAME } from '@love/shared';
-import { Badge, Card, CardContent, CardDescription, CardHeader, CardTitle } from '@love/ui';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 // Placeholder page proving the web toolchain works end to end
 // (Next.js, Tailwind, shared UI, shared packages, Lucide).

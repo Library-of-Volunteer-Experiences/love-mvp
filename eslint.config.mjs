@@ -19,7 +19,7 @@ import prettier from 'eslint-config-prettier';
 import globals from 'globals';
 
 const WEB_FILES = ['apps/web/**/*.{js,jsx,mjs,ts,tsx}'];
-const REACT_NON_WEB_FILES = ['apps/mobile/**/*.{js,jsx,ts,tsx}', 'packages/ui/**/*.{ts,tsx}'];
+const REACT_NON_WEB_FILES = ['apps/mobile/**/*.{js,jsx,ts,tsx}'];
 
 /**
  * Provider SDKs may only be imported inside packages/backend/src/providers/**.
@@ -133,7 +133,7 @@ export default tseslint.config(
     },
   },
 
-  // ── React outside Next (mobile + shared UI) ──────────────────
+  // ── React outside Next (mobile) ──────────────────────────────
   {
     files: REACT_NON_WEB_FILES,
     plugins: { react, 'react-hooks': reactHooks, 'jsx-a11y': jsxA11y },
@@ -151,7 +151,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ['packages/ui/**/*.{ts,tsx}'],
+    files: ['apps/web/src/components/**/*.{ts,tsx}'],
     rules: { ...jsxA11y.flatConfigs.recommended.rules },
   },
 
@@ -165,7 +165,7 @@ export default tseslint.config(
           patterns: [
             ...PROVIDER_SDK_PATTERNS,
             {
-              regex: '^@love/(backend|config|auth|ui)(/.*)?$',
+              regex: '^@love/(backend|config|auth)(/.*)?$',
               message:
                 'Server-only / web-only package. Mobile talks to the web API via @love/api-contracts.',
             },

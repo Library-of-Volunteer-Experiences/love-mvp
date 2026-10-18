@@ -13,7 +13,7 @@ binaries are public: anything inside them can be extracted.
 - The web app's server (route handlers, server actions) is the only code that calls the backend.
 - The mobile app calls the web app's versioned HTTP API using types from `@love/api-contracts` and
   schemas from `@love/validation`.
-- Mobile may not import `@love/backend`, `@love/config`, `@love/auth`, or `@love/ui` (lint rule).
+- Mobile may not import `@love/backend`, `@love/config`, or `@love/auth` (lint rule).
 
 ## Consequences
 

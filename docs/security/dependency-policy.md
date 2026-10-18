@@ -6,8 +6,8 @@ Before `npm install`-ing anything, check:
 
 1. **Need** — can existing code or a package already in the tree do it?
 2. **Health** — actively maintained, widely used, has a security policy.
-3. **License** — MIT/Apache-2.0/BSD/ISC preferred. GPL/AGPL are blocked by the dependency-review
-   workflow.
+3. **License** — MIT/Apache-2.0/BSD/ISC preferred. Avoid GPL/AGPL (check the package's licence by hand;
+   there is no automated licence check).
 4. **Scope** — install into the narrowest workspace (`npm install <pkg> -w @love/web`). Provider
    SDKs go only into `@love/backend`.
 5. **Audit** — `npm audit` shows no new high/critical advisories.
@@ -18,9 +18,7 @@ Before `npm install`-ing anything, check:
 | ---------------------------- | ------------------ | -------------------------------------------------- |
 | `npm audit` (web + packages) | every push, weekly | Yes, on **high** or **critical**                   |
 | `npm audit` (mobile)         | every push, weekly | Yes, on **critical**; high is reported (see below) |
-| Dependency review            | every PR           | Yes, on high severity or blocked licence           |
 | Dependabot                   | weekly             | Opens PRs                                          |
-| CodeQL                       | every push, weekly | Findings appear in the Security tab                |
 
 ## Known accepted advisories
 
