@@ -57,7 +57,7 @@ jobs:
           npm audit --omit=dev --audit-level=high
           --workspace=@love/web --workspace=@love/backend --workspace=@love/auth
           --workspace=@love/config --workspace=@love/shared --workspace=@love/validation
-          --workspace=@love/api-contracts --workspace=@love/ui
+          --workspace=@love/api-contracts
       # Blocking on critical. Known high advisories in Expo's build-time CLI tooling are
       # tracked in docs/security/dependency-policy.md and reported (non-blocking) below.
       - name: Audit mobile (fail on critical)

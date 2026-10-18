@@ -1,15 +1,15 @@
-import { cn } from '@love/ui/lib/utils';
+import { cn } from '@/lib/utils';
 import { GalleryVerticalEnd } from 'lucide-react';
 
-import { Button } from '@love/ui/components/button';
+import { Button } from '@/components/ui/button';
 import {
   Field,
   FieldDescription,
   FieldGroup,
   FieldLabel,
   FieldSeparator,
-} from '@love/ui/components/field';
-import { Input } from '@love/ui/components/input';
+} from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
 
 export function SignupForm({ className, ...props }: React.ComponentProps<'div'>) {
   return (

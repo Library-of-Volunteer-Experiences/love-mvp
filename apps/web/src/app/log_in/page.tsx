@@ -1,7 +1,9 @@
 import Link from 'next/link';
 import { ArrowRight, ShieldCheck } from 'lucide-react';
 import { APP_NAME } from '@love/shared';
-import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Input } from '@love/ui';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 
 export const metadata = {
   title: 'Log in',

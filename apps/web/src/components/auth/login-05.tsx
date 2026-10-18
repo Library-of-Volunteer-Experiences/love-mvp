@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { Apple, GalleryVerticalEnd, Globe } from 'lucide-react';
 
-import { Button } from '@love/ui/components/button';
-import { Input } from '@love/ui/components/input';
-import { cn } from '@love/ui/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
 
 type Login05Props = Omit<React.ComponentProps<'section'>, 'title'> & {
   action: NonNullable<React.ComponentProps<'form'>['action']>;

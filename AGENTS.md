@@ -16,7 +16,7 @@ include many older adults; the data includes residents' personal information.
 - Provider SDKs (Convex, Supabase, Firebase, Twilio, SendGrid, OpenAI, …) only inside
   `packages/backend/src/providers/<vendor>/`.
 - `process.env` only inside `packages/config`.
-- `apps/mobile` must not import `@love/backend`, `@love/config`, `@love/auth`, or `@love/ui`.
+- `apps/mobile` must not import `@love/backend`, `@love/config`, or `@love/auth`.
 - Never add `eslint-disable`, `@ts-ignore`, `@ts-expect-error`, or `any` to get past a check.
 - Never weaken CSP, security headers, `apps/web/src/proxy.ts`, rate limits, or lint rules.
 - Never log passwords, tokens, secrets, or PII.

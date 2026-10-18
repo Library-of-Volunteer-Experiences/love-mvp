@@ -10,7 +10,6 @@ const nextConfig: NextConfig = {
     '@love/backend',
     '@love/config',
     '@love/shared',
-    '@love/ui',
     '@love/validation',
   ],
   turbopack: {

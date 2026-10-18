@@ -9,7 +9,8 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import { APP_CLIENT, APP_FULL_NAME, APP_NAME } from '@love/shared';
-import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from '@love/ui';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 const steps = [
   {

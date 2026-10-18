@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Slot } from 'radix-ui';
 import { cva, type VariantProps } from 'class-variance-authority';
 
-import { cn } from '@love/ui/lib/utils';
+import { cn } from '@/lib/utils';
 
 // Accessibility: every size meets the 44×44px minimum target (WCAG 2.5.5 AAA /
 // Apple HIG) — larger than shadcn defaults, for older and less dexterous users.

@@ -52,18 +52,18 @@ Do not bypass hooks with `--no-verify`.
 
 ## Where code goes
 
-| You're adding…                                               | Put it in                                                             |
-| ------------------------------------------------------------ | --------------------------------------------------------------------- |
-| A page, route handler, or server action                      | `apps/web/src/app/…`                                                  |
-| A feature-specific web component                             | `apps/web/src/components/…`                                           |
-| A generic UI primitive (shadcn)                              | `packages/ui` — run `npx shadcn@latest add <name>` from `apps/web`    |
-| A mobile screen                                              | `apps/mobile/app/…`                                                   |
-| A model / shared type / constant                             | `packages/shared` (and update `docs/security/data-classification.md`) |
-| Input validation                                             | `packages/validation`                                                 |
-| A request/response type                                      | `packages/api-contracts`                                              |
-| An env var, provider setting, or feature flag                | `packages/config` (+ `.env.example`)                                  |
-| A permission or access rule                                  | `packages/auth`                                                       |
-| Anything that talks to Convex/Supabase/Firebase/email/SMS/AI | `packages/backend/src/providers/<vendor>/`                            |
+| You're adding…                                               | Put it in                                                                         |
+| ------------------------------------------------------------ | --------------------------------------------------------------------------------- |
+| A page, route handler, or server action                      | `apps/web/src/app/…`                                                              |
+| A feature-specific web component                             | `apps/web/src/components/…`                                                       |
+| A generic UI primitive (shadcn)                              | `apps/web/src/components/ui` — run `npx shadcn@latest add <name>` from `apps/web` |
+| A mobile screen                                              | `apps/mobile/app/…`                                                               |
+| A model / shared type / constant                             | `packages/shared` (and update `docs/security/data-classification.md`)             |
+| Input validation                                             | `packages/validation`                                                             |
+| A request/response type                                      | `packages/api-contracts`                                                          |
+| An env var, provider setting, or feature flag                | `packages/config` (+ `.env.example`)                                              |
+| A permission or access rule                                  | `packages/auth`                                                                   |
+| Anything that talks to Convex/Supabase/Firebase/email/SMS/AI | `packages/backend/src/providers/<vendor>/`                                        |
 
 ## Rules of thumb
 
@@ -82,7 +82,7 @@ Do not bypass hooks with `--no-verify`.
 
 React is pinned to the version the Expo SDK requires (ADR 0006). Upgrade Expo first in
 `apps/mobile` with `npx expo install expo@^<sdk> --fix`, then align `react`/`react-dom` in
-`apps/web`, `packages/ui`, and the root `overrides`.
+`apps/web` and the root `overrides`.
 
 ## Using AI coding assistants
 

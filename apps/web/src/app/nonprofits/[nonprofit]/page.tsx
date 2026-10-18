@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ArrowLeft, CalendarDays, Clock3, MapPin, PhoneCall, ShieldCheck } from 'lucide-react';
-import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from '@love/ui';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 const nonprofitDirectory: Record<
   string,

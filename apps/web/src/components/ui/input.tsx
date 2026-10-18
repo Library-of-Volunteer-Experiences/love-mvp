@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { cn } from '@love/ui/lib/utils';
+import { cn } from '@/lib/utils';
 
 // Accessibility: 48px tall, 16px+ text (also prevents iOS zoom-on-focus),
 // 2px border for visibility, and a thick focus ring. Always pair with a

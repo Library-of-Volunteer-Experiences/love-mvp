@@ -67,7 +67,7 @@ packages/api-contracts  API request/response types (web + mobile)
 packages/config         Validated env + provider configuration + feature flags
 packages/auth           RBAC, session policy, CSRF helpers
 packages/backend        Provider interfaces + implementations (Convex, Supabase, Firebase)
-packages/ui             shadcn/ui component library
+apps/web/src/components Web UI components (ui/ = shadcn building blocks)
 docs/                   Architecture deep dives, ADRs, security docs
 ```
 

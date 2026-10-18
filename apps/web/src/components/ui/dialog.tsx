@@ -4,7 +4,7 @@ import * as React from 'react';
 import { Dialog as DialogPrimitive } from 'radix-ui';
 import { XIcon } from 'lucide-react';
 
-import { cn } from '@love/ui/lib/utils';
+import { cn } from '@/lib/utils';
 
 // Radix Dialog provides focus trapping, Escape-to-close, scroll locking,
 // and aria-labelledby/aria-describedby wiring. Every dialog MUST render a

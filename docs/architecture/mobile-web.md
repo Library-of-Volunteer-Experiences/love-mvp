@@ -8,7 +8,7 @@
 | Framework                  | Next.js 16 App Router                      | Expo SDK 57 + Expo Router                                |
 | Talks to backend           | Directly, server-side, via `@love/backend` | **Never** — calls the web app's HTTP API                 |
 | Holds provider credentials | Server env only                            | Never                                                    |
-| UI components              | `@love/ui` (shadcn/ui, Tailwind)           | Own React Native components (future), same design tokens |
+| UI components              | `apps/web/src/components` (shadcn/ui)      | Own React Native components (future), same design tokens |
 | Session storage            | HttpOnly cookie                            | `expo-secure-store` bearer token (future)                |
 
 ## What is shared
@@ -28,7 +28,7 @@ cannot drift apart silently — a breaking change fails type-check in both apps.
 - `@love/backend`, `@love/config`, `@love/auth`: server-only. Shipping them in a mobile binary
   would expose configuration and invite direct database access. Lint blocks these imports in
   `apps/mobile`.
-- `@love/ui`: depends on the DOM and Tailwind. React Native needs native primitives.
+- Web UI components (`apps/web/src/components`): depend on the DOM and Tailwind. React Native needs native primitives.
 
 ## Future mobile API
 
