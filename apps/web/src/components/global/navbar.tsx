@@ -26,15 +26,15 @@ export default function Navbar() {
 
       <nav
         aria-label="Main navigation"
-        className="absolute top-1/2 left-1/2 hidden -translate-x-1/2 -translate-y-1/2 items-center gap-6 text-sm font-medium text-white/80 md:flex"
+        className="text-m absolute top-1/2 left-1/2 hidden -translate-x-1/2 -translate-y-1/2 items-center gap-6 font-medium text-white/80 md:flex"
       >
-        <Link href="/homepage" className="hover:text-foreground">
+        <Link href="/homepage" className="hover:text-white/50">
           Home
         </Link>
-        <Link href="/nonprofits/habitat-for-humanity" className="hover:text-foreground">
+        <Link href="/nonprofits/habitat-for-humanity" className="hover:text-white/50">
           Nonprofits
         </Link>
-        <Link href="/sign_up" className="hover:text-foreground">
+        <Link href="/sign_up" className="hover:text-white/50">
           Sign up
         </Link>
       </nav>
