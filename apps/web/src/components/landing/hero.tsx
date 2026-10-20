@@ -5,7 +5,7 @@
 
 export function Hero() {
   return (
-    <section className="relative isolate flex min-h-[80svh] items-center justify-center overflow-hidden bg-slate-950 px-6 py-24 text-center text-white">
+    <section className="relative isolate flex min-h-svh items-center justify-center overflow-hidden bg-slate-950 px-6 py-24 text-center text-white">
       <video
         aria-hidden="true"
         autoPlay
