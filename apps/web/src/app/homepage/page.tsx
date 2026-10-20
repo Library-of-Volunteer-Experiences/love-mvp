@@ -1,14 +1,8 @@
+import Navbar from '@/components/global/navbar';
+import { Hero } from '@/components/landing/hero';
 import Link from 'next/link';
-import {
-  ArrowRight,
-  CalendarCheck2,
-  Clock3,
-  HeartHandshake,
-  MapPin,
-  Search,
-  ShieldCheck,
-} from 'lucide-react';
-import { APP_CLIENT, APP_FULL_NAME, APP_NAME } from '@love/shared';
+import { ArrowRight, CalendarCheck2, Clock3, HeartHandshake, MapPin, Search } from 'lucide-react';
+import { APP_CLIENT, APP_FULL_NAME } from '@love/shared';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
@@ -53,48 +47,12 @@ export const metadata = {
 export default function HomepagePage() {
   return (
     <main id="main-content" className="min-h-screen bg-background text-foreground">
-      <header className="border-b border-border bg-card/80 backdrop-blur-sm">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
-          <Link href="/homepage" className="text-lg font-semibold tracking-tight text-primary">
-            {APP_NAME}
-          </Link>
-
-          <nav
-            aria-label="Main navigation"
-            className="hidden items-center gap-6 text-sm font-medium md:flex"
-          >
-            <Link href="/homepage" className="text-foreground/80 hover:text-foreground">
-              Home
-            </Link>
-            <Link
-              href="/nonprofits/habitat-for-humanity"
-              className="text-foreground/80 hover:text-foreground"
-            >
-              Nonprofits
-            </Link>
-            <Link href="/sign_up" className="text-foreground/80 hover:text-foreground">
-              Sign up
-            </Link>
-          </nav>
-
-          <div className="flex items-center gap-3">
-            <Button variant="outline" asChild>
-              <Link href="/log_in">Log in</Link>
-            </Button>
-            <Button asChild>
-              <Link href="/sign_up">Join now</Link>
-            </Button>
-          </div>
-        </div>
+      <header className="absolute inset-x-0 top-0 z-20 bg-linear-to-b from-black/70 via-black/30 to-transparent">
+        <Navbar />
       </header>
-
-      <section className="mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1.2fr_0.8fr] lg:px-8 lg:py-24">
+      <Hero />
+      <section className="mx-auto grid max-w-6xl gap-20 px-4 py-16 sm:px-6 lg:grid-cols-[1.2fr_0.8fr] lg:px-8 lg:py-24">
         <div className="space-y-8">
-          <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1.5 text-sm font-medium text-primary">
-            <ShieldCheck className="size-4" aria-hidden="true" />
-            Trusted community service
-          </div>
-
           <div className="space-y-5">
             <h1 className="max-w-xl text-4xl font-bold tracking-tight text-foreground md:text-5xl lg:text-6xl">
               Give your time where it matters most.
