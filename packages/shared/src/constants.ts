@@ -2,7 +2,7 @@
 // LOVE — Shared Constants
 // ─────────────────────────────────────────────────────────────
 
-export const APP_NAME = 'LOVE' as const;
+export const APP_NAME = 'love' as const;
 export const APP_FULL_NAME = 'Library of Volunteer Experiences' as const;
 export const APP_CLIENT = 'Fannin County, Georgia' as const;
 
