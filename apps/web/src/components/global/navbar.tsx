@@ -15,7 +15,7 @@ export default function Navbar() {
           {APP_NAME}
         </Link>
         <div className="flex items-center gap-3">
-          <Button variant="outline" asChild>
+          <Button variant="outline" size="sm" asChild>
             <Link href="/log_in">Log in</Link>
           </Button>
           <Button asChild>

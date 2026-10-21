@@ -1,5 +1,6 @@
 import Navbar from '@/components/global/navbar';
 import { Hero } from '@/components/landing/hero';
+import { MobilePreview } from '@/components/landing/mobile';
 import Link from 'next/link';
 import { ArrowRight, CalendarCheck2, Clock3, HeartHandshake, MapPin, Search } from 'lucide-react';
 import { APP_CLIENT, APP_FULL_NAME } from '@love/shared';
@@ -51,6 +52,7 @@ export default function HomepagePage() {
         <Navbar />
       </header>
       <Hero />
+      <MobilePreview />
       <section className="mx-auto grid max-w-6xl gap-20 px-4 py-16 sm:px-6 lg:grid-cols-[1.2fr_0.8fr] lg:px-8 lg:py-24">
         <div className="space-y-8">
           <div className="space-y-5">
