@@ -1,12 +1,12 @@
+import Link from 'next/link';
 import Navbar from '@/components/global/navbar';
 import { Hero } from '@/components/landing/hero';
 import { MobilePreview } from '@/components/landing/mobile';
-import Link from 'next/link';
+import { LaptopPreview } from '@/components/landing/laptop';
 import { ArrowRight, CalendarCheck2, Clock3, HeartHandshake, MapPin, Search } from 'lucide-react';
 import { APP_CLIENT, APP_FULL_NAME } from '@love/shared';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { LaptopPreview } from '@/components/landing/laptop';
 
 const steps = [
   {
