@@ -49,7 +49,7 @@ export default function HomepagePage() {
 
         {/* Middle: the feed */}
         <main id="main-content" className="px-4 py-8 sm:px-6 lg:px-10">
-          <div className="mx-auto w-full max-w-2xl xl:mx-0">
+          <div className="mx-auto w-full xl:mx-0">
             <h1 className="mb-6 font-serif text-3xl tracking-tight italic">Your feed</h1>
             <FeedList events={feedEvents} />
           </div>

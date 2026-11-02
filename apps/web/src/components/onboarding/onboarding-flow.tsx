@@ -6,12 +6,12 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { Cause, DistanceOption, FreeTime, Skill } from '@love/shared';
-import { AddressInput } from '@/components/onboarding/address-input';
-import { AvailabilityPicker } from '@/components/onboarding/availability-picker';
-import { CausePicker } from '@/components/onboarding/cause-picker';
-import { DistancePicker } from '@/components/onboarding/distance-picker';
+import { AddressInput } from '@/components/onboarding/OnboardingStep/address-input';
+import { AvailabilityPicker } from '@/components/onboarding/OnboardingStep/availability-picker';
+import { CausePicker } from '@/components/onboarding/OnboardingStep/cause-picker';
+import { DistancePicker } from '@/components/onboarding/OnboardingStep/distance-picker';
 import { OnboardingStep } from '@/components/onboarding/onboarding-step';
-import { SkillPicker } from '@/components/onboarding/skill-picker';
+import { SkillPicker } from '@/components/onboarding/OnboardingStep/skill-picker';
 
 type OnboardingStepCopy = { title: string; description?: string };
 
