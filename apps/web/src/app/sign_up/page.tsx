@@ -145,9 +145,13 @@ export default function SignUpPage() {
                 </select>
               </div>
 
-              <Button type="submit" className="w-full" size="lg">
-                Create account
-                <ArrowRight className="size-4" aria-hidden="true" />
+              {/* Temporary: no account backend yet, so this just goes to onboarding.
+                  Swap back to type="submit" with a server action once sign-up is real. */}
+              <Button asChild className="w-full" size="lg">
+                <Link href="/onboarding">
+                  Create account
+                  <ArrowRight className="size-4" aria-hidden="true" />
+                </Link>
               </Button>
             </form>
 
