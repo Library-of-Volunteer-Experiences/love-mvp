@@ -9,9 +9,13 @@
 // ─────────────────────────────────────────────────────────────
 
 import type {
+  CAUSES,
+  DISTANCE_OPTIONS,
+  FREE_TIMES,
   MATCH_STATUS,
   NONPROFIT_MEMBER_ROLES,
   NOTIFICATION_CHANNELS,
+  SKILLS,
   USER_ROLES,
 } from './constants';
 
@@ -205,6 +209,15 @@ export interface Availability {
 }
 
 export type MatchStatus = (typeof MATCH_STATUS)[number];
+
+// ─────────────────────────────────────────────────────────────
+// Volunteer Preferences
+// ─────────────────────────────────────────────────────────────
+
+export type Cause = (typeof CAUSES)[number]['value'];
+export type Skill = (typeof SKILLS)[number]['value'];
+export type FreeTime = (typeof FREE_TIMES)[number]['value'];
+export type DistanceOption = (typeof DISTANCE_OPTIONS)[number]['value'];
 
 // ─────────────────────────────────────────────────────────────
 // User Roles & Auth
