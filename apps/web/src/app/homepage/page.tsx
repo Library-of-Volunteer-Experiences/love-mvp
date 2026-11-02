@@ -2,7 +2,8 @@ import type { Metadata } from 'next';
 import { NonprofitSidebar, type NonprofitLink } from '@/components/feed/nonprofit-sidebar';
 import { FeedList, type FeedEvent } from '@/components/feed/feed-list';
 import { FeedRail } from '@/components/feed/feed-rail';
-import AppNavbar from '@/components/global/app-navbar';
+import { AppNavbar } from '@/components/global/app-navbar';
+import { HOME_GRID_COLUMNS } from '@/components/global/home-grid';
 
 // Fake FeedEvent data
 const feedEvents: FeedEvent[] = [
@@ -35,7 +36,7 @@ export default function HomepagePage() {
   return (
     <div>
       <AppNavbar />
-      <div className="grid min-h-[calc(100dvh-4rem)] grid-cols-1 lg:grid-cols-[18rem_minmax(0,1fr)] xl:grid-cols-[18rem_minmax(0,1fr)_18rem] xl:gap-x-10">
+      <div className={`grid min-h-[calc(100dvh-4rem)] grid-cols-1 ${HOME_GRID_COLUMNS}`}>
         {/* Left: full-height panel with a visible divider */}
         <nav
           aria-label="Your nonprofits"
@@ -47,8 +48,8 @@ export default function HomepagePage() {
         </nav>
 
         {/* Middle: the feed */}
-        <main id="main-content" className="lg-px-10 px-4 py-8 sm:px-6">
-          <div className="mx-auto w-full max-w-2xl">
+        <main id="main-content" className="px-4 py-8 sm:px-6 lg:px-10">
+          <div className="mx-auto w-full max-w-2xl xl:mx-0">
             <h1 className="mb-6 font-serif text-3xl tracking-tight italic">Your feed</h1>
             <FeedList events={feedEvents} />
           </div>
@@ -57,9 +58,9 @@ export default function HomepagePage() {
         {/* Right: no border, separated only by the gap */}
         <aside
           aria-label="Important events"
-          className="px-4 pb-8 sm:px-6 lg:col-start-2 lg:px-10 xl:col-start-auto xl:px-0 xl:py-8 xl:pr-8 xl:pl-0"
+          className="px-4 pb-8 sm:px-6 lg:col-start-2 lg:px-10 xl:col-start-auto xl:px-0 xl:py-8 xl:pr-10 xl:pl-0"
         >
-          <div className="mx auto w-full max-w-2xl xl:max-w-none">
+          <div className="mx-auto w-full max-w-2xl xl:max-w-none">
             <FeedRail events={feedEvents} />
           </div>
         </aside>
