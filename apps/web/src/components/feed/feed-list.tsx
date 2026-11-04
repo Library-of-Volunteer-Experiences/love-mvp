@@ -1,21 +1,14 @@
 // FeedList: ranked list of event cards
 // Used on: /homepage (logged in)
 
-export type FeedEvent = {
-  id: string;
-  name: string;
-  nonprofitName: string;
-  date: string;
-};
+import { EventCard, type EventCardData } from '@/components/events/event-card';
 
-export function FeedList({ events }: { events: FeedEvent[] }) {
+export function FeedList({ events }: { events: EventCardData[] }) {
   return (
     <ul className="space-y-4">
       {events.map((event) => (
-        <li key={event.id} className="rounded-xl border border-border p-4">
-          <p className="text-muted-foreground">{event.nonprofitName}</p>
-          <h2 className="text-xl font-semibold">{event.name}</h2>
-          <p>{event.date}</p>
+        <li key={event.id}>
+          <EventCard event={event} />
         </li>
       ))}
     </ul>

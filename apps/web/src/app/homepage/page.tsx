@@ -1,24 +1,55 @@
 import type { Metadata } from 'next';
 import { NonprofitSidebar, type NonprofitLink } from '@/components/feed/nonprofit-sidebar';
-import { FeedList, type FeedEvent } from '@/components/feed/feed-list';
+import type { EventCardData } from '@/components/events/event-card';
+import { FeedList } from '@/components/feed/feed-list';
 import { FeedRail } from '@/components/feed/feed-rail';
 import { AppNavbar } from '@/components/global/app-navbar';
 import { HOME_GRID_COLUMNS } from '@/components/global/home-grid';
 
-// Fake FeedEvent data
-const feedEvents: FeedEvent[] = [
+// Fake EventCardData: varied so every card state shows (low spots, full, many roles/tags)
+const feedEvents: EventCardData[] = [
   {
     id: '1',
     name: 'Pantry restocking',
-    nonprofitName: 'Example Food Pantry',
-    date: 'Saturday, 9 AM',
+    nonprofit: { slug: 'example-food-pantry', name: 'Example Food Pantry' },
+    town: 'Exampleville',
+    nextShift: { start: '2026-11-08T09:00:00-05:00', end: '2026-11-08T11:00:00-05:00' },
+    moreShiftCount: 3,
+    roles: [
+      { name: 'Shelf stocker', skillTags: ['Lifting'] },
+      { name: 'Driver', skillTags: ['Driving'] },
+      { name: 'Greeter', skillTags: ['People skills'] },
+    ],
+    causeTags: ['Hunger', 'Seniors'],
+    spotsLeft: 3,
+    loveCount: 12,
   },
-  { id: '2', name: 'Book drive', nonprofitName: 'Sample Literacy Project', date: 'Sunday, 1 PM' },
+  {
+    id: '2',
+    name: 'Book drive',
+    nonprofit: { slug: 'sample-literacy-project', name: 'Sample Literacy Project' },
+    town: 'Testburg',
+    nextShift: { start: '2026-11-09T13:00:00-05:00', end: '2026-11-09T15:30:00-05:00' },
+    moreShiftCount: 0,
+    roles: [{ name: 'Book sorter', skillTags: ['Organizing'] }],
+    causeTags: ['Education'],
+    spotsLeft: 14,
+    loveCount: 4,
+  },
   {
     id: '3',
     name: 'Animal shelter cleanup',
-    nonprofitName: 'Test Animal Rescue',
-    date: 'Monday, 10 AM',
+    nonprofit: { slug: 'test-animal-rescue', name: 'Test Animal Rescue' },
+    town: 'Sampletown',
+    nextShift: { start: '2026-11-10T10:00:00-05:00', end: '2026-11-10T12:00:00-05:00' },
+    moreShiftCount: 1,
+    roles: [
+      { name: 'Kennel cleaner', skillTags: [] },
+      { name: 'Dog walker', skillTags: ['Animal care'] },
+    ],
+    causeTags: ['Animals'],
+    spotsLeft: 0,
+    loveCount: 27,
   },
 ];
 
