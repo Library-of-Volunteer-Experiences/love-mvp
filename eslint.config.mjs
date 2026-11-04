@@ -28,10 +28,6 @@ const REACT_NON_WEB_FILES = ['apps/mobile/**/*.{js,jsx,ts,tsx}'];
 // Anchored regexes so relative paths like './providers/convex' are not matched.
 const PROVIDER_SDK_PATTERNS = [
   {
-    regex: '^(convex|@convex-dev/[^/]+)(/.*)?$',
-    message: 'Provider SDKs are only allowed in packages/backend/src/providers. Use @love/backend.',
-  },
-  {
     regex: '^@supabase/',
     message: 'Provider SDKs are only allowed in packages/backend/src/providers. Use @love/backend.',
   },
@@ -72,6 +68,7 @@ export default tseslint.config(
       '**/.expo/**',
       '**/.turbo/**',
       '**/coverage/**',
+      '**/convex/_generated/**',
       '**/next-env.d.ts',
       '**/expo-env.d.ts',
       'apps/mobile/ios/**',

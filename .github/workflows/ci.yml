@@ -17,6 +17,7 @@ env:
   TURBO_TELEMETRY_DISABLED: 1
   NEXT_TELEMETRY_DISABLED: 1
   EXPO_NO_TELEMETRY: 1
+  NEXT_PUBLIC_CONVEX_URL: https://placeholder.convex.cloud
 
 jobs:
   lint:
