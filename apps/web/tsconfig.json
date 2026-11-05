@@ -8,7 +8,8 @@
     "types": ["node"],
     "plugins": [{ "name": "next" }],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@/convex/*": ["./convex/*"]
     }
   },
   "include": [

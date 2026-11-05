@@ -12,15 +12,18 @@
 // ─────────────────────────────────────────────────────────────
 
 import { NextResponse, type NextRequest } from 'next/server';
-import { buildContentSecurityPolicy, getServerEnv } from '@love/config';
+import { buildContentSecurityPolicy, getPublicEnv, getServerEnv } from '@love/config';
 
 export function proxy(request: NextRequest) {
   const env = getServerEnv();
+  const { CONVEX_URL } = getPublicEnv();
   const nonce = btoa(crypto.randomUUID());
   const csp = buildContentSecurityPolicy({
     nonce,
     isDev: env.NODE_ENV === 'development',
     isDeployed: env.APP_ENV === 'staging' || env.APP_ENV === 'production',
+    // Allow the live connection to our Convex backend (https + its websocket)
+    connectSrc: [CONVEX_URL, CONVEX_URL.replace('https://', 'wss://')],
   });
 
   const requestHeaders = new Headers(request.headers);

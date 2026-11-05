@@ -50,6 +50,7 @@ const booleanFlag = z
 const publicEnvSchema = z.object({
   APP_NAME: z.string().default('LOVE'),
   APP_URL: z.url().default('http://localhost:3000'),
+  CONVEX_URL: z.url('NEXT_PUBLIC_CONVEX_URL is missing: run `npx convex dev` in apps/web'),
 });
 
 const serverEnvSchema = z
@@ -215,6 +216,7 @@ export function getPublicEnv(): PublicEnv {
   return parseOrThrow(publicEnvSchema, {
     APP_NAME: process.env.NEXT_PUBLIC_APP_NAME ?? process.env.EXPO_PUBLIC_APP_NAME,
     APP_URL: process.env.NEXT_PUBLIC_APP_URL ?? process.env.EXPO_PUBLIC_APP_URL,
+    CONVEX_URL: process.env.NEXT_PUBLIC_CONVEX_URL,
   });
 }
 
