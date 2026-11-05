@@ -4,6 +4,7 @@
 
 import Link from 'next/link';
 import { CalendarDays, MapPin } from 'lucide-react';
+import { LoveButton } from '@/components/events/love-button';
 import { TagChip } from '@/components/global/tag-chip';
 import { formatShift } from '@/lib/format-shift';
 
@@ -20,6 +21,7 @@ export type EventCardData = {
   causeTags: string[];
   spotsLeft: number;
   loveCount: number;
+  lovedByMe: boolean;
 };
 
 const MAX_TAGS = 3;
@@ -92,8 +94,12 @@ export function EventCard({ event }: { event: EventCardData }) {
 
       <div className="mt-4 flex items-center justify-between">
         <SpotsLeft count={event.spotsLeft} />
-        {/* Step 6: replace with <LoveButton /> */}
-        <span>❤️ {event.loveCount}</span>
+        <LoveButton
+          eventName={event.name}
+          initialCount={event.loveCount}
+          initialLoved={event.lovedByMe}
+          className="relative z-10"
+        />
       </div>
     </article>
   );

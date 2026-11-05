@@ -23,6 +23,7 @@ const feedEvents: EventCardData[] = [
     causeTags: ['Hunger', 'Seniors'],
     spotsLeft: 3,
     loveCount: 12,
+    lovedByMe: true,
   },
   {
     id: '2',
@@ -35,6 +36,7 @@ const feedEvents: EventCardData[] = [
     causeTags: ['Education'],
     spotsLeft: 14,
     loveCount: 4,
+    lovedByMe: false,
   },
   {
     id: '3',
@@ -50,6 +52,7 @@ const feedEvents: EventCardData[] = [
     causeTags: ['Animals'],
     spotsLeft: 0,
     loveCount: 27,
+    lovedByMe: false,
   },
 ];
 
