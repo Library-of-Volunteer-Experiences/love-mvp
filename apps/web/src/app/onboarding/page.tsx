@@ -1,7 +1,21 @@
 // Page: /onboarding: onboarding steps (logged in)
 // Spec: docs/product/pages.md and docs/product/user-flows.md (Part 3)
-// Not built yet. The placeholder below only exists because Next.js
-// refuses to build a page file that doesn't export a component.
+import { OnboardingFlow } from '@/components/onboarding/onboarding-flow';
+
+export const metadata = {
+  title: 'Get started',
+  description: 'Tell LOVE what you care about so we can show you the right events.',
+};
+
 export default function OnboardingPage() {
-  return null;
+  return (
+    <main
+      id="main-content"
+      className="flex min-h-screen justify-center bg-background px-4 py-12 text-foreground"
+    >
+      <div className="w-full max-w-2xl">
+        <OnboardingFlow />
+      </div>
+    </main>
+  );
 }

@@ -16,24 +16,17 @@ import {
   Wifi,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { type ComponentType, useEffect, useRef, useState } from 'react';
+import { type ComponentType } from 'react';
+import { demoSteps } from './demo-steps';
+import { useActiveStep } from './use-active-step';
 
-const causes = [
-  {
-    name: 'Senior support',
-    details: 'Friendly visits, transportation help, and community outreach for older adults.',
-  },
-  {
-    name: 'Food access',
-    details: 'Meal prep, pantry support, and neighborhood resource coordination.',
-  },
-  {
-    name: 'Youth programs',
-    details: 'Tutoring, mentoring, and event support for families across Fannin County.',
-  },
+const steps: { title: string; description: string; screen: ComponentType }[] = [
+  { ...demoSteps.search, screen: HomeScreen },
+  { ...demoSteps.details, screen: DetailScreen },
+  { ...demoSteps.shift, screen: ShiftScreen },
+  { ...demoSteps.confirm, screen: ConfirmScreen },
 ];
 
-// Phone frame drawn in CSS with a phone-sized preview of the volunteer UI inside.
 // Decorative copy of the real UI, so it is hidden from assistive tech and described by the caption.
 
 function StatusBar() {
@@ -50,6 +43,7 @@ function StatusBar() {
 }
 
 function PhoneFrame({ children, className }: { children: React.ReactNode; className?: string }) {
+  // Phone frame drawn in CSS with a phone-sized preview of the volunteer UI inside.
   return (
     <div
       aria-hidden="true"
@@ -107,10 +101,10 @@ function HomeScreen() {
 
       <div className="space-y-2">
         <p className="text-xs font-semibold">Popular causes</p>
-        {causes.map(({ name, details }) => (
-          <div key={name} className="rounded-xl border border-border bg-card p-2.5">
-            <p className="text-xs font-semibold">{name}</p>
-            <p className="line-clamp-1 text-[10px] text-muted-foreground">{details}</p>
+        {steps.map(({ title, description }) => (
+          <div key={title} className="rounded-xl border border-border bg-card p-2.5">
+            <p className="text-xs font-semibold">{title}</p>
+            <p className="line-clamp-1 text-[10px] text-muted-foreground">{description}</p>
           </div>
         ))}
       </div>
@@ -192,30 +186,6 @@ function ConfirmScreen() {
   );
 }
 
-const steps: { title: string; description: string; screen: ComponentType }[] = [
-  {
-    title: 'Find something you care about',
-    description: 'Search by cause, place, or time. Opportunities near you show up first.',
-    screen: HomeScreen,
-  },
-  {
-    title: 'See the details',
-    description:
-      'Every opportunity shows where it is, when it happens, and how many spots are left.',
-    screen: DetailScreen,
-  },
-  {
-    title: 'Choose a time',
-    description: 'Pick the shift that fits your week — one time or every week.',
-    screen: ShiftScreen,
-  },
-  {
-    title: "You're signed up",
-    description: 'You get a confirmation right away and a reminder before your shift.',
-    screen: ConfirmScreen,
-  },
-];
-
 function PhoneScreens({ activeStep }: { activeStep: number }) {
   return (
     <>
@@ -235,27 +205,7 @@ function PhoneScreens({ activeStep }: { activeStep: number }) {
 }
 
 export function MobilePreview() {
-  const [activeStep, setActiveStep] = useState(0);
-  const stepRefs = useRef<(HTMLLIElement | null)[]>([]);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            const index = stepRefs.current.findIndex((el) => el === entry.target);
-            if (index !== -1) setActiveStep(index);
-          }
-        }
-      },
-      { rootMargin: '-50% 0px -50% 0px' }
-    );
-
-    for (const el of stepRefs.current) {
-      if (el) observer.observe(el);
-    }
-    return () => observer.disconnect();
-  }, []);
+  const { activeStep, stepRefs } = useActiveStep();
 
   return (
     <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
