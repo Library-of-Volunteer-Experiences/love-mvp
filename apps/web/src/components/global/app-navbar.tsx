@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { APP_NAME } from '@love/shared';
 import { Button } from '@/components/ui/button';
 import { HOME_GRID_COLUMNS } from '@/components/global/home-grid';
+import { User } from 'lucide-react';
 
 export function AppNavbar() {
   return (
@@ -35,11 +36,10 @@ export function AppNavbar() {
 
       {/* Column 3: lines up with the rail on xl; shares the feed column on lg */}
       <div className="flex items-center gap-3 lg:col-start-2 lg:row-start-1 lg:justify-self-end lg:pr-10 xl:col-start-3 xl:justify-end xl:justify-self-stretch xl:pr-10">
-        <Button variant="outline" size="sm" asChild>
-          <Link href="/log_in">Log in</Link>
-        </Button>
-        <Button asChild>
-          <Link href="/sign_up">Join now</Link>
+        <Button variant="default" size="icon" className="rounded-full" asChild>
+          <Link href="/settings" aria-label="Your profile page">
+            <User aria-hidden="true" />
+          </Link>
         </Button>
       </div>
     </header>
