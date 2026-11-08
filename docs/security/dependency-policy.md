@@ -8,8 +8,8 @@ Before `npm install`-ing anything, check:
 2. **Health** — actively maintained, widely used, has a security policy.
 3. **License** — MIT/Apache-2.0/BSD/ISC preferred. Avoid GPL/AGPL (check the package's licence by hand;
    there is no automated licence check).
-4. **Scope** — install into the narrowest workspace (`npm install <pkg> -w @love/web`). Provider
-   SDKs go only into `@love/backend`.
+4. **Scope** — install into the narrowest workspace (`npm install <pkg> -w @love/web`). Don't
+   add another database SDK; Convex is the backend (ADR 0007).
 5. **Audit** — `npm audit` shows no new high/critical advisories.
 
 ## Automated checks

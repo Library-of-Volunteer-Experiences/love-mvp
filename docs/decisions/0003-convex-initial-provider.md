@@ -1,6 +1,6 @@
 # 0003. Convex as the initial backend provider
 
-- **Status:** Proposed
+- **Status:** Superseded by [0007](0007-use-convex-directly.md) (Convex was adopted, but used directly)
 - **Date:** 2026-10-02
 
 ## Context

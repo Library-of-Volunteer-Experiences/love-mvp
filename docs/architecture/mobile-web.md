@@ -1,5 +1,7 @@
 # Mobile and web relationship
 
+> **Note (2026-11-07):** written before Convex was chosen. The backend is now Convex, used directly ([ADR 0007](../decisions/0007-use-convex-directly.md)), so mentions of `@love/backend` / a web-hosted API are outdated. Mobile will most likely call Convex functions directly; decide in an ADR when mobile work starts.
+
 ## Roles
 
 |                            | Web (`apps/web`)                           | Mobile (`apps/mobile`)                                   |

@@ -1,5 +1,7 @@
 # AI-ready skill matching
 
+> **Note (2026-11-07):** the interfaces referenced here live in the legacy `packages/backend` ([ADR 0007](../decisions/0007-use-convex-directly.md)). When AI matching is built, implement it as Convex actions (with Convex vector search); the privacy and fairness rules below still apply.
+
 **Status:** designed, not implemented. No AI code or AI vendor SDK exists in the repository. This
 page describes where it will go so that early decisions don't block it.
 

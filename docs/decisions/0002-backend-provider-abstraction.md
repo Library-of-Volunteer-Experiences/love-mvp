@@ -1,6 +1,6 @@
 # 0002. Put every backend behind provider interfaces
 
-- **Status:** Accepted
+- **Status:** Superseded by [0007](0007-use-convex-directly.md)
 - **Date:** 2026-10-02
 
 ## Context

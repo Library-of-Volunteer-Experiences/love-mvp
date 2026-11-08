@@ -6,16 +6,25 @@ include many older adults; the data includes residents' personal information.
 ## Before you change anything
 
 1. Read **[SECURITY.md](SECURITY.md)** — its rules are mandatory, and §10 is written for you.
-2. Skim **[ARCHITECTURE.md](ARCHITECTURE.md)** — especially package dependency rules (§3).
+2. Skim **[ARCHITECTURE.md](ARCHITECTURE.md)** — especially the backend section (§4).
 3. For UI work, read **[docs/architecture/accessibility.md](docs/architecture/accessibility.md)**.
+4. For backend work, read **`apps/web/convex/_generated/ai/guidelines.md`** (Convex rules for the
+   installed version) and **[docs/product/plan.md](docs/product/plan.md)** §4.
+5. For what to build, read **[docs/product/](docs/product/)** (requirements, pages, user flows).
 
 ## Hard rules
 
-- Validate → authorize → act: Zod schema from `@love/validation`, guard from `@love/auth`, then
-  `getBackend()` from `@love/backend`.
-- Provider SDKs (Convex, Supabase, Firebase, Twilio, SendGrid, OpenAI, …) only inside
-  `packages/backend/src/providers/<vendor>/`.
-- `process.env` only inside `packages/config`.
+- **The backend is Convex, used directly** ([ADR 0007](docs/decisions/0007-use-convex-directly.md)).
+  Backend code lives in `apps/web/convex/`; pages call it with `useQuery` / `useMutation` /
+  `useAction` from `convex/react` and the generated `api` object.
+- **Do not use `@love/backend` / `getBackend()` or the RBAC matrix in `packages/auth`.** They are
+  legacy and will be removed.
+- **Every Convex function:** has an `args` validator (`v.*` from `convex/values`); gets the caller on
+  the server (never from an argument); and checks ownership/membership before reading private data
+  or changing anything. Functions only the backend calls are `internal*`.
+- Do not add another data store or its SDK (Supabase, Firebase, Prisma, …).
+- `process.env` only inside `packages/config` (Convex functions read deployment env vars as Convex
+  documents describe).
 - `apps/mobile` must not import `@love/backend`, `@love/config`, or `@love/auth`.
 - Never add `eslint-disable`, `@ts-ignore`, `@ts-expect-error`, or `any` to get past a check.
 - Never weaken CSP, security headers, `apps/web/src/proxy.ts`, rate limits, or lint rules.
@@ -27,7 +36,7 @@ include many older adults; the data includes residents' personal information.
 
 ```bash
 npm run lint          # must pass
-npm run type-check    # must pass
+npm run type-check    # must pass (on Windows, `npx turbo run type-check --concurrency=1`)
 npm run build         # web build + mobile bundles
 npm run verify        # all of the above + format check
 ```

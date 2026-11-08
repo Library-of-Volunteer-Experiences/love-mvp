@@ -47,6 +47,12 @@ Never test against production data or real residents' accounts.
 
 ## 2. Authentication
 
+> **Implementation note (2026-11-07):** sign-in is implemented with **Convex Auth**
+> ([ADR 0007](docs/decisions/0007-use-convex-directly.md)), which stores password hashes and sessions
+> itself. The rules below are the security targets. Where they name files or helpers from the legacy
+> `@love/auth` / `auth.config.ts` design, apply the same rule using Convex Auth's configuration, and
+> open an issue for any target Convex Auth doesn't meet yet.
+
 - **MFA support is required.** The `AuthProvider` interface includes TOTP enrollment and challenge
   methods. MFA is **mandatory for `admin` and `superadmin`** (`auth.config.ts → mfa.requiredForRoles`).
 - **Session timeouts:** 30-minute idle timeout and 12-hour absolute timeout
@@ -71,22 +77,26 @@ Never test against production data or real residents' accounts.
 
 ## 3. Authorization
 
-- **Every secure endpoint and server action performs an authorization check** using
-  `authorize()`, `requirePermission()`, `requireNonprofitAccess()`, or `requireSelf()` from
-  `@love/auth` — **before** calling the backend.
+- **Every Convex function that reads private data or changes anything performs an authorization
+  check inside the function, before touching data** ([ADR 0007](docs/decisions/0007-use-convex-directly.md)):
+  get the caller on the server (`getAuthUserId(ctx)` / a `requireUser(ctx)` helper in
+  `apps/web/convex/lib/`), then check ownership or nonprofit membership. Never accept a user ID as an
+  argument for authorization. Every Convex function is reachable from the internet, so these checks
+  are the security boundary.
 - The `proxy.ts` (middleware) layer is **never** the only authorization check.
-- `*_own` permissions additionally verify ownership (`requireSelf`) or organization membership
-  (`requireNonprofitAccess`). Nonprofit users can only act on nonprofits they belong to.
-- Roles are assigned server-side only. Self-service sign-up can create `volunteer` or `nonprofit`
-  accounts — never `admin` or `superadmin` (enforced in `signUpSchema`).
-- Changes to `permissions.ts`, `guards.ts`, `session.ts`, or `auth.config.ts` require review by a
-  second maintainer.
+- There is **one account type**. Nonprofit powers come only from a membership record in the
+  database (owner or member), checked inside each function. Users can only act on nonprofits they
+  belong to; only owners manage members.
+- Nobody can make themselves an admin; there is no self-service path to elevated roles.
+- Changes to `apps/web/convex/schema.ts`, `apps/web/convex/lib/auth.ts` (the caller-check helpers),
+  or the auth configuration require review by a second maintainer.
 
 ## 4. API and input handling
 
-- **Validate all input with Zod.** Every request body, query string, route param, form submission,
-  webhook payload, and environment variable is parsed with a schema from `@love/validation` (or
-  `@love/config` for env). Use `schema.parse()`/`safeParse()` — never cast with `as`.
+- **Validate all input.** Every Convex function declares `args` validators (`v.*` from
+  `convex/values`); Convex rejects calls that don't match before the handler runs. Forms also
+  validate in the browser with Zod (`@love/validation`), and environment variables are validated in
+  `@love/config`. Never cast untrusted data with `as`.
 - Schemas are `.strict()` (unknown keys rejected) and every string has a `.max()`.
 - Never accept `id`, `createdAt`, `updatedAt`, `role`, or ownership fields from the client unless
   the endpoint is specifically for changing them and is authorized for it.
@@ -141,13 +151,13 @@ Never test against production data or real residents' accounts.
 - **No dynamic query concatenation.** Never build SQL, GraphQL, or query strings from user input.
   Never pass user input as a field/collection name without checking it against an allowlist.
 - **Authorization checks on every secure endpoint** (section 3).
-- **No direct database or provider access outside the provider layer.** Only
-  `packages/backend/src/providers/**` may import provider SDKs (enforced by ESLint).
-  Application code uses `getBackend()` and the interfaces.
-- Service-role / admin credentials (e.g. `SUPABASE_SERVICE_ROLE_KEY`, Firebase admin keys) are used
-  only on the server, only inside provider implementations.
-- Server-only packages (`@love/backend`, `@love/config`) are never imported into client components
-  or the mobile app.
+- **All database access goes through Convex functions in `apps/web/convex/`.** The browser never
+  touches the database directly; it calls those functions, which validate `args` and check the
+  caller. No other data-store SDK may be added (enforced by ESLint).
+- Admin credentials (e.g. `CONVEX_DEPLOY_KEY`) live only in deployment settings (Vercel, the Convex
+  dashboard), never in code or `NEXT_PUBLIC_*` variables.
+- Server-only packages (`@love/config`'s server env, legacy `@love/backend`) are never imported into
+  client components or the mobile app.
 
 ## 8. Logging
 
@@ -184,19 +194,19 @@ addition, before finishing any change, an AI agent **must verify and state** tha
       tests, docs, logs, or `NEXT_PUBLIC_*`/`EXPO_PUBLIC_*` variables.
 - [ ] **No authentication bypasses** — no new code path reaches protected data without a verified
       session; no "temporary" auth skips, test backdoors, or hard-coded users.
-- [ ] **No authorization bypasses** — every new or modified secure endpoint/server action calls an
-      `@love/auth` guard before touching data; ownership/membership is checked for `*_own`
-      permissions.
-- [ ] **No unsanitized input** — every new input is parsed with a Zod schema; no `as` casts on
-      untrusted data; no `dangerouslySetInnerHTML`.
+- [ ] **No authorization bypasses** — every new or modified Convex function that reads private data
+      or changes anything gets the caller on the server and checks ownership/membership before
+      touching data; no user ID is trusted from an argument.
+- [ ] **No unsanitized input** — every Convex function has an `args` validator; forms validate with
+      Zod; no `as` casts on untrusted data; no `dangerouslySetInnerHTML`.
 - [ ] **No insecure dependencies** — any new package is necessary, maintained, and `npm audit`
       shows no new high/critical advisories.
 - [ ] **No disabled security middleware** — CSP, security headers, `proxy.ts`, Server Action origin
       checks, rate limits, and lint rules are unchanged (or the change is explicitly approved).
-- [ ] **No direct database access outside the provider layer** — no provider SDK imports or raw
-      queries outside `packages/backend/src/providers/**`.
-- [ ] **All new APIs validated with Zod** — request and response contracts live in
-      `@love/validation` / `@love/api-contracts`.
+- [ ] **No database access outside Convex functions** — no other data-store SDK, and no use of the
+      legacy `@love/backend` layer.
+- [ ] **Internal functions stay internal** — functions only the backend calls are registered with
+      `internalQuery` / `internalMutation` / `internalAction`.
 - [ ] **All changes pass linting and type checking** — `npm run lint` and `npm run type-check`
       succeed (ideally `npm run verify`).
 - [ ] **No storage of plaintext credentials** — passwords are only ever handled by the
@@ -215,15 +225,16 @@ Additional rules for AI agents:
 
 ## 11. How these rules are enforced
 
-| Rule                                       | Enforcement                                                              |
-| ------------------------------------------ | ------------------------------------------------------------------------ |
-| Provider SDKs only in the provider layer   | ESLint `no-restricted-imports` (`eslint.config.mjs`)                     |
-| `process.env` only in `@love/config`       | ESLint `no-restricted-properties`                                        |
-| Server packages not in mobile              | ESLint `no-restricted-imports` (mobile override)                         |
-| No `dangerouslySetInnerHTML`, `eval`       | ESLint `react/no-danger`, `no-eval`, `no-implied-eval`, `no-new-func`    |
-| Env vars valid; prod fully configured      | Zod schema in `packages/config/src/env.ts` (fails at startup)            |
-| Deny-by-default RBAC                       | `packages/auth/src/permissions.ts` + guards                              |
-| CSP + security headers                     | `apps/web/src/proxy.ts`, `apps/web/next.config.ts`                       |
-| Lint, types, build                         | Husky pre-commit + CI (`.github/workflows/ci.yml`)                       |
-| Secrets, SAST, vulnerable deps             | CI (`.github/workflows/security.yml`): TruffleHog, npm audit, Dependabot |
-| Human review of security-sensitive changes | PR template security checklist                                           |
+| Rule                                       | Enforcement                                                               |
+| ------------------------------------------ | ------------------------------------------------------------------------- |
+| No second data store (Supabase, Firebase…) | ESLint `no-restricted-imports` (`eslint.config.mjs`)                      |
+| Inputs + caller checked in every function  | Convex `args` validators + PR template checklist + review                 |
+| `process.env` only in `@love/config`       | ESLint `no-restricted-properties`                                         |
+| Server packages not in mobile              | ESLint `no-restricted-imports` (mobile override)                          |
+| No `dangerouslySetInnerHTML`, `eval`       | ESLint `react/no-danger`, `no-eval`, `no-implied-eval`, `no-new-func`     |
+| Env vars valid; prod fully configured      | Zod schema in `packages/config/src/env.ts` (fails at startup)             |
+| Membership-based access                    | Caller + membership checks in each Convex function (`convex/lib/auth.ts`) |
+| CSP + security headers                     | `apps/web/src/proxy.ts`, `apps/web/next.config.ts`                        |
+| Lint, types, build                         | Husky pre-commit + CI (`.github/workflows/ci.yml`)                        |
+| Secrets, SAST, vulnerable deps             | CI (`.github/workflows/security.yml`): TruffleHog, npm audit, Dependabot  |
+| Human review of security-sensitive changes | PR template security checklist                                            |

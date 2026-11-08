@@ -3,14 +3,15 @@
 Short documents that capture **why** a significant decision was made, so future maintainers don't
 have to guess. Format: [MADR](https://adr.github.io/madr/)-lite (see `0000-template.md`).
 
-| #    | Decision                                                                                         | Status   |
-| ---- | ------------------------------------------------------------------------------------------------ | -------- |
-| 0001 | [Monorepo with npm workspaces + Turborepo](0001-monorepo-turborepo.md)                           | Accepted |
-| 0002 | [Provider-agnostic backend behind interfaces](0002-backend-provider-abstraction.md)              | Accepted |
-| 0003 | [Convex as the initial backend provider](0003-convex-initial-provider.md)                        | Proposed |
-| 0004 | [Next.js web as primary platform and API; Expo as API client](0004-web-primary-mobile-client.md) | Accepted |
-| 0005 | [Explicit RBAC permission matrix with organization memberships](0005-rbac-permission-matrix.md)  | Accepted |
-| 0006 | [Single React version pinned to the Expo SDK](0006-single-react-version.md)                      | Accepted |
+| #    | Decision                                                                                         | Status             |
+| ---- | ------------------------------------------------------------------------------------------------ | ------------------ |
+| 0001 | [Monorepo with npm workspaces + Turborepo](0001-monorepo-turborepo.md)                           | Accepted           |
+| 0002 | [Provider-agnostic backend behind interfaces](0002-backend-provider-abstraction.md)              | Superseded by 0007 |
+| 0003 | [Convex as the initial backend provider](0003-convex-initial-provider.md)                        | Superseded by 0007 |
+| 0004 | [Next.js web as primary platform and API; Expo as API client](0004-web-primary-mobile-client.md) | Accepted           |
+| 0005 | [Explicit RBAC permission matrix with organization memberships](0005-rbac-permission-matrix.md)  | Accepted           |
+| 0006 | [Single React version pinned to the Expo SDK](0006-single-react-version.md)                      | Accepted           |
+| 0007 | [Use Convex directly as the backend](0007-use-convex-directly.md)                                | Accepted           |
 
 ## When to write one
 

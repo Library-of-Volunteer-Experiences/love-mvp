@@ -3,6 +3,8 @@
 - **Status:** Accepted
 - **Date:** 2026-10-02
 
+> **Note (2026-11-07):** superseded in part by [ADR 0007](0007-use-convex-directly.md). The backend is Convex, called directly; the "mobile calls the web API" part will be revisited when mobile work starts.
+
 ## Context
 
 Web is the primary platform. Mobile comes later and must reuse backend contracts and types. Mobile

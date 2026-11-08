@@ -1,5 +1,7 @@
 # Provider replacement
 
+> **Outdated (2026-11-07):** this describes the original provider-agnostic design, which was replaced by using Convex directly ([ADR 0007](../decisions/0007-use-convex-directly.md)). Kept for history; do not follow it for new code.
+
 LOVE may start on Convex and later move to Supabase, Firebase, plain PostgreSQL, AWS, Azure, or
 something that doesn't exist yet. This page is the playbook.
 
