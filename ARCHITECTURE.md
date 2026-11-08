@@ -10,8 +10,8 @@ recorded decisions live in [`docs/decisions/`](docs/decisions/).
 1. [Guiding principles](#1-guiding-principles)
 2. [Repository structure](#2-repository-structure)
 3. [Package dependency rules](#3-package-dependency-rules)
-4. [Backend abstraction strategy](#4-backend-abstraction-strategy)
-5. [Provider replacement strategy](#5-provider-replacement-strategy)
+4. [Backend (Convex)](#4-backend-convex)
+5. [Legacy packages](#5-legacy-packages)
 6. [Configuration](#6-configuration)
 7. [Authentication and authorization](#7-authentication-and-authorization)
 8. [Notifications](#8-notifications)
@@ -24,8 +24,10 @@ recorded decisions live in [`docs/decisions/`](docs/decisions/).
 
 ## 1. Guiding principles
 
-1. **Provider-agnostic.** No application code knows which backend, email service, SMS gateway, or
-   AI vendor is in use. Switching is a configuration change.
+1. **One backend, used directly.** Convex is the database, server functions, file storage, and auth
+   ([ADR 0007](docs/decisions/0007-use-convex-directly.md)). Backend code lives in
+   `apps/web/convex/`, and pages call it directly. (This replaced the earlier "provider-agnostic"
+   design, ADR 0002.)
 2. **Secure by default.** See [SECURITY.md](SECURITY.md). Architecture rules that protect security
    are enforced by lint, not just documented.
 3. **Accessible first.** Many users are older adults. Large targets, large text, high contrast,
@@ -40,19 +42,21 @@ recorded decisions live in [`docs/decisions/`](docs/decisions/).
 ```
 love-app/
 ├── apps/
-│   ├── web/                 Next.js 16 (App Router) — primary platform, also hosts the API
+│   ├── web/                 Next.js 16 (App Router) — primary platform
+│   │   ├── convex/          BACKEND: schema.ts, query/mutation/action files, lib/ helpers
+│   │   │   └── _generated/  Written by `npx convex dev` (never edit)
 │   │   └── src/
 │   │       ├── app/         Routes (pages) + globals.css (design tokens)
 │   │       ├── components/  ALL web components: ui/ (shadcn building blocks), auth/, …
-│   │       └── lib/         Helpers (cn, forms, query client)
+│   │       └── lib/         Helpers (cn, forms, formatting)
 │   └── mobile/              Expo (React Native) — secondary platform, placeholder today
 ├── packages/
 │   ├── shared/              Domain models (Volunteer, Nonprofit, Event, ...) and constants
 │   ├── validation/          Zod schemas for every input that crosses a trust boundary
 │   ├── api-contracts/       Request/response types between clients and the web server
 │   ├── config/              Validated env + backend/auth/notification/security config, feature flags
-│   ├── auth/                RBAC permission matrix, guards, session policy, CSRF helpers
-│   └── backend/             Provider interfaces + factory; vendor implementations in providers/
+│   ├── auth/                LEGACY (ADR 0007): RBAC matrix, guards — do not use in new code
+│   └── backend/             LEGACY (ADR 0007): provider interfaces — do not use; to be removed
 ├── docs/
 │   ├── architecture/        Deep dives (backend abstraction, AI matching, accessibility, ...)
 │   ├── decisions/           Architecture Decision Records (ADRs)
@@ -87,80 +91,80 @@ There is no separate build step for packages, which keeps the feedback loop fast
   └────────┘ └───────────────────────────┘
 ```
 
-| Package         | May be imported by              | Must never import                                       |
-| --------------- | ------------------------------- | ------------------------------------------------------- |
-| `shared`        | everything                      | anything platform-specific                              |
-| `validation`    | everything                      | `config`, `backend`, `auth`                             |
-| `api-contracts` | web, mobile                     | `config`, `backend`, `auth`                             |
-| `config`        | web (server), `auth`, `backend` | — (it is the **only** package that reads `process.env`) |
-| `auth`          | web (server)                    | provider SDKs                                           |
-| `backend`       | web (server code only)          | — (only `src/providers/**` may import provider SDKs)    |
-| **mobile**      | —                               | `backend`, `config`, `auth` (lint-enforced)             |
+| Package           | May be imported by                      | Must never import                                       |
+| ----------------- | --------------------------------------- | ------------------------------------------------------- |
+| `shared`          | everything                              | anything platform-specific                              |
+| `validation`      | everything                              | `config`, `backend`, `auth`                             |
+| `api-contracts`   | web, mobile                             | `config`, `backend`, `auth`                             |
+| `config`          | web (server), `auth`, `backend`         | — (it is the **only** package that reads `process.env`) |
+| `auth`            | **legacy — no new imports**             | provider SDKs                                           |
+| `backend`         | **legacy — no new imports**             | —                                                       |
+| `apps/web/convex` | web pages (through the generated `api`) | browser-only code (it runs on Convex's servers)         |
+| **mobile**        | —                                       | `backend`, `config`, `auth` (lint-enforced)             |
 
-## 4. Backend abstraction strategy
+## 4. Backend (Convex)
 
-All persistence, authentication, file storage, notifications, and audit logging go through
-interfaces in [`packages/backend/src/interfaces/`](packages/backend/src/interfaces/):
+Convex is the backend ([ADR 0007](docs/decisions/0007-use-convex-directly.md)). It provides the
+database, server functions, file storage, scheduling, and authentication (Convex Auth). All backend
+code lives in **`apps/web/convex/`** and runs on Convex's servers, never in the browser.
 
-| Interface              | Responsibility                                                    |
-| ---------------------- | ----------------------------------------------------------------- |
-| `AuthProvider`         | Identity: sign-up/in, magic links, OAuth (PKCE), MFA, sessions    |
-| `DatabaseProvider`     | Typed CRUD, structured queries, transactions, real-time subscribe |
-| `StorageProvider`      | Files (logos, photos) with public/private visibility, signed URLs |
-| `NotificationProvider` | Email, SMS, push                                                  |
-| `AuditLogProvider`     | Append-only security event log                                    |
-| AI interfaces          | Skill extraction, embeddings, vector index, matching (future)     |
+| File                                         | Holds                                                                                    |
+| -------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `schema.ts`                                  | Every table, its fields (`v.*` validators), and its indexes                              |
+| `<area>.ts` (e.g. `events.ts`, `signups.ts`) | `query` (read), `mutation` (read + write), `action` (calls outside services) functions   |
+| `lib/`                                       | Shared helpers, e.g. `requireUser(ctx)`, distance math                                   |
+| `_generated/`                                | Written by `npx convex dev`: the `api` object, types, and the AI guidelines. Never edit. |
 
-Application code obtains implementations from **one function**:
+**How a page uses it:**
 
 ```ts
-import { getBackend } from '@love/backend';
+// apps/web/convex/events.ts  (backend)
+export const listUpcoming = query({
+  args: { now: v.number() },
+  handler: async (ctx, args) => {
+    /* ctx.db reads … */
+  },
+});
 
-const { db, auth, storage, notifications, audit } = getBackend();
-const event = await db.getById('events', eventId);
+// apps/web/src/app/…/page.tsx  ('use client')
+const events = useQuery(api.events.listUpcoming, { now }); // live: re-renders when data changes
 ```
 
-`getBackend()` reads validated configuration from `@love/config` and asks the **provider
-registry** (`packages/backend/src/index.ts`) for the configured vendor's implementations. Vendor
-folders (`providers/convex`, `providers/supabase`, `providers/firebase`) each export a
-`BackendProviderModule`. Today every vendor method is a typed stub that throws
-`ProviderNotImplementedError`, so the app can boot and type-check before any backend is chosen.
+`useMutation` and `useAction` work the same way, but return a function you call (e.g. on a click).
 
-**Why this shape:**
+**Security model:**
 
-- Interfaces speak the domain's language (`'events'`, `Volunteer`), not a vendor's (`ctx.db`,
-  `supabase.from()`), so swapping vendors cannot ripple into features.
-- Queries are structured objects with keys constrained to real model fields, so implementations
-  can always translate them into parameterized calls (no query strings).
-- Authorization lives **above** the provider (in `@love/auth`), so access rules don't have to be
-  re-implemented per vendor.
+- Every exported function is reachable from the internet. Each function that reads private data or
+  changes anything must get the caller on the server and check ownership/membership itself. See
+  [SECURITY.md §3](SECURITY.md#3-authorization).
+- Every function declares `args` validators; Convex rejects mismatched calls before the handler
+  runs.
+- Functions only other backend code calls use `internalQuery` / `internalMutation` /
+  `internalAction`.
+- Mutations are transactions: all writes in one mutation succeed or fail together. This is what
+  keeps shift capacity and love counts correct.
 
-Details: [docs/architecture/backend-abstraction.md](docs/architecture/backend-abstraction.md).
+**Rules for the installed Convex version:** `apps/web/convex/_generated/ai/guidelines.md` and
+[docs/product/plan.md §4](docs/product/plan.md).
 
-## 5. Provider replacement strategy
+**Development:** each developer runs `npx convex dev` in `apps/web`, which uses their **own** dev
+deployment (own data). Production is a separate deployment, used by the live site.
 
-Switching providers is a configuration change:
+## 5. Legacy packages
 
-```bash
-BACKEND_PROVIDER=supabase   # was: convex — database + auth + storage all follow
-```
-
-Optional `AUTH_PROVIDER` / `STORAGE_PROVIDER` overrides allow a **phased migration** (e.g. move
-the database first, auth later). Adding a brand-new vendor (PostgreSQL, AWS, Azure, ...) takes four
-steps, none of which touch application code:
-
-1. Add the name to `BACKEND_PROVIDERS` and a connection type in `@love/config`.
-2. Create `packages/backend/src/providers/<name>/` implementing `BackendProviderModule`.
-3. Register it in the registry in `packages/backend/src/index.ts`.
-4. Run the shared provider contract tests against it, then flip the config value.
-
-Data migration, dual-running, and rollback are covered in
-[docs/architecture/provider-replacement.md](docs/architecture/provider-replacement.md).
+`packages/backend` (provider interfaces, `getBackend()`) and the RBAC matrix/guards in
+`packages/auth` come from the original provider-agnostic design (ADR 0002, superseded). They are not
+connected to anything. **New code must not import them.** They will be removed once nothing depends
+on them. [docs/architecture/backend-abstraction.md](docs/architecture/backend-abstraction.md) and
+[provider-replacement.md](docs/architecture/provider-replacement.md) are kept only as history.
 
 ## 6. Configuration
 
-`@love/config` is the only package that reads `process.env` (lint-enforced). Every variable is
-validated by a Zod schema at startup:
+`@love/config` is the only package in the web app that reads `process.env` (lint-enforced); the
+Convex URL reaches pages through `getPublicEnv().CONVEX_URL`. Convex functions read their own
+deployment environment variables, set in the Convex dashboard. Every `@love/config` variable is
+validated by a Zod schema at startup. (`backend.config.ts`, `auth.config.ts`, and
+`notification.config.ts` belong to the legacy design and are not used by Convex.)
 
 | File                     | Purpose                                                                       |
 | ------------------------ | ----------------------------------------------------------------------------- |
@@ -178,36 +182,31 @@ misconfigured deployment fails at startup instead of misbehaving.
 
 ## 7. Authentication and authorization
 
-- **Authentication** (who are you?) is the `AuthProvider`'s job. The interface supports
-  email/password, magic links, OAuth with PKCE, and TOTP MFA. It is stateless: the app layer owns
-  cookies, using settings from `auth.config.ts`.
-- **Authorization** (may you do this?) is `@love/auth`'s job, identical regardless of provider:
-  - Roles: `volunteer`, `nonprofit`, `admin`, `superadmin`.
-  - An explicit **permission matrix** with no implicit inheritance (deny by default).
-  - **Organization memberships** (`OrganizationMembership`) let many users manage one nonprofit,
-    each with a member role (`owner`/`manager`/`member`); `requireNonprofitAccess()` checks them.
-  - Session policy: idle timeout, absolute timeout, mandatory MFA for admin roles.
-
-No sign-in screens exist yet. When they are built, they call `AuthProvider` through server
-actions and guard everything with `@love/auth`.
+- **Authentication** (who are you?) is **Convex Auth**: email + password (and Google sign-in),
+  with users stored in the `users` table. Inside any Convex function, `getAuthUserId(ctx)` returns
+  the signed-in user's ID (or `null`).
+- **Authorization** (may you do this?) is checked **inside each Convex function**:
+  - There is **one account type**. A person can volunteer and can also belong to nonprofits.
+  - **Nonprofit powers come from a `memberships` record** (`owner` or `member`) linking a user to a
+    nonprofit. Functions that change a nonprofit or its events check that the caller has a
+    membership for it; only owners manage members.
+  - Shared helpers in `apps/web/convex/lib/auth.ts` (e.g. `requireUser`, `requireMember`) keep these
+    checks consistent.
 
 ## 8. Notifications
 
-One `NotificationProvider` interface; one provider **per channel**, chosen in config:
-
-```
-NOTIFICATION_EMAIL_PROVIDER=sendgrid   NOTIFICATION_SMS_PROVIDER=twilio   NOTIFICATION_PUSH_PROVIDER=expo
-```
-
-`CompositeNotificationProvider` routes each payload to its channel's provider, so features call
-`notifications.send({ channel: 'email', ... })` without knowing the vendor. SMS and push are also
-behind feature flags. The dev-only `console` provider masks recipients and omits message bodies.
+Notifications are **in-app only**: rows in the `notifications` table, written inside the mutations
+that cause them (e.g. editing an event notifies everyone signed up), and shown by a bell in the
+navbar that updates live through `useQuery`. Email and SMS are post-MVP and would be sent from Convex
+actions.
 
 ## 9. Future AI integration points
 
 Volunteers describe skills in their own words ("I teach kids math.", "I speak Spanish."). Future
-AI will extract structured skills, embed them, and match them against event requirements. The
-foundation is in place; **no AI is implemented**.
+AI will extract structured skills, embed them, and match them against event requirements. **No AI
+is implemented**, and the MVP matches with tags instead. The interfaces named below live in the
+legacy `packages/backend`; when AI work starts, it will be built as Convex actions (with Convex's
+vector search), using this design as a guide.
 
 | Integration point                 | Location                                                               |
 | --------------------------------- | ---------------------------------------------------------------------- |
@@ -223,12 +222,13 @@ Full design, including privacy rules and a non-AI fallback: [docs/architecture/a
 
 ## 10. Mobile/web relationship
 
-- **The web app is the primary platform and the API server.** Its route handlers and server
-  actions are the only code that talks to the backend.
-- **The mobile app is a client of the web app's API**, exactly like a browser. It never imports
-  `@love/backend` or `@love/config` and never holds provider credentials (lint-enforced).
-- Both share `@love/shared` (models), `@love/validation` (the same Zod schemas validate forms on
-  both platforms and requests on the server) and `@love/api-contracts` (request/response types).
+- **The web app is the primary platform.** Its pages call the Convex backend in `apps/web/convex/`.
+- **Mobile (later)** will most likely call the **same Convex functions** through Convex's React
+  Native client. The same `args` validators and caller checks then protect both apps. Record the
+  decision in an ADR when mobile work starts (ADR 0004 assumed a web-hosted API, before Convex was
+  chosen). Mobile never holds admin credentials (lint-enforced).
+- Both share `@love/shared` (constants such as tag lists, and types) and `@love/validation` (Zod
+  schemas for forms).
 - React is pinned to the single version the current Expo SDK supports, so web and mobile share one
   React copy in the monorepo.
 - The UI components (`apps/web/src/components`) are web-only (DOM + Tailwind). Mobile will get its own components that

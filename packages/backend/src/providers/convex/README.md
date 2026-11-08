@@ -1,5 +1,7 @@
 # Convex provider
 
+> **Legacy (2026-11-07):** this stub is not used. The real Convex backend lives in `apps/web/convex/` ([ADR 0007](../../../../../docs/decisions/0007-use-convex-directly.md)).
+
 Convex is the planned initial backend. Every method is currently a stub that throws
 `ProviderNotImplementedError` (see `../shared/notImplemented.ts`), so the app can boot and
 type-check before any backend is connected.

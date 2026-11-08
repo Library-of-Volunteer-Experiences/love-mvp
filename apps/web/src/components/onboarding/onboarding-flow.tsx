@@ -52,7 +52,8 @@ export function OnboardingFlow() {
     if (stepIndex < STEPS.length - 1) {
       setStepIndex(stepIndex + 1);
     } else {
-      // TODO: save answers (validate → authorize → getBackend()) once the backend exists.
+      // TODO: save answers with a Convex mutation (users.savePreferences) once auth exists.
+      // See docs/product/plan.md step 5.
       // /homepage is the signed-in feed for now; the spec's target is `/`.
       router.push('/homepage');
     }

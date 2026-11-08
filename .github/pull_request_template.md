@@ -13,10 +13,12 @@
 ## Security checklist (required — see SECURITY.md)
 
 - [ ] No secrets, tokens, or real personal data committed
-- [ ] All new inputs validated with a Zod schema from `@love/validation`
-- [ ] Every new secure endpoint / server action calls an `@love/auth` guard
-- [ ] No direct provider SDK or database access outside `packages/backend/src/providers`
-- [ ] No `process.env` reads outside `@love/config`
+- [ ] Every new Convex function has an `args` validator (`v.*`)
+- [ ] Every new Convex function that reads private data or changes anything gets the caller on the
+      server (never from an argument) and checks ownership/membership
+- [ ] Functions only the backend calls are `internalQuery` / `internalMutation` / `internalAction`
+- [ ] No new data store or SDK besides Convex; no use of legacy `@love/backend` / `getBackend()`
+- [ ] No `process.env` reads outside `@love/config` (Convex functions excepted)
 - [ ] No passwords, tokens, or PII written to logs
 - [ ] No security middleware, headers, or lint rules disabled
 - [ ] New dependencies reviewed (maintained, license OK, `npm audit` clean)
@@ -30,5 +32,5 @@
 
 ## Verification
 
-- [ ] `npm run verify` passes locally
+- [ ] `npm run lint`, type-check, and `npm run build:web` pass locally
 - [ ] Screenshots / recordings attached for UI changes

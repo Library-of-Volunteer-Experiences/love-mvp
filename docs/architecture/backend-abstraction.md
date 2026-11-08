@@ -1,6 +1,8 @@
 # Backend abstraction
 
-> Summary in [ARCHITECTURE.md §4](../../ARCHITECTURE.md#4-backend-abstraction-strategy). This page
+> **Outdated (2026-11-07):** this describes the original provider-agnostic design, which was replaced by using Convex directly ([ADR 0007](../decisions/0007-use-convex-directly.md)). Kept for history; do not follow it for new code.
+
+> Summary in [ARCHITECTURE.md §5](../../ARCHITECTURE.md#5-legacy-packages). This page
 > covers the mechanics.
 
 ## Layers
