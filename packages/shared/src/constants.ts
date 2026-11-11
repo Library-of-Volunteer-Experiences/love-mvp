@@ -6,6 +6,9 @@ export const APP_NAME = 'love' as const;
 export const APP_FULL_NAME = 'Library of Volunteer Experiences' as const;
 export const APP_CLIENT = 'Fannin County, Georgia' as const;
 
+/** PLACEHOLDER: replace with the team's real help address before launch. */
+export const SUPPORT_EMAIL = 'help@example.org' as const;
+
 /** Platform-level roles. Single source of truth for the UserRole type. */
 export const USER_ROLES = ['volunteer', 'nonprofit', 'admin', 'superadmin'] as const;
 
