@@ -9,7 +9,7 @@ import { HOME_GRID_COLUMNS } from '@/components/global/home-grid';
 // Fake EventCardData: varied so every card state shows (low spots, full, many roles/tags)
 const feedEvents: EventCardData[] = [
   {
-    id: '1',
+    id: 'pantry-restocking',
     name: 'Pantry restocking',
     nonprofit: { slug: 'example-food-pantry', name: 'Example Food Pantry' },
     town: 'Exampleville',
@@ -26,7 +26,7 @@ const feedEvents: EventCardData[] = [
     lovedByMe: true,
   },
   {
-    id: '2',
+    id: 'book-drive',
     name: 'Book drive',
     nonprofit: { slug: 'sample-literacy-project', name: 'Sample Literacy Project' },
     town: 'Testburg',
@@ -39,7 +39,7 @@ const feedEvents: EventCardData[] = [
     lovedByMe: false,
   },
   {
-    id: '3',
+    id: 'animal-shelter-cleanup',
     name: 'Animal shelter cleanup',
     nonprofit: { slug: 'test-animal-rescue', name: 'Test Animal Rescue' },
     town: 'Sampletown',

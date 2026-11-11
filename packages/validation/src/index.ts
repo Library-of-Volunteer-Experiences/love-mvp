@@ -170,6 +170,31 @@ export const updateEventSchema = eventBaseSchema
   .refine(endAfterStart, endAfterStartIssue);
 
 // ─────────────────────────────────────────────────────────────
+// Shift sign-up (the event page's sign-up popup)
+// ─────────────────────────────────────────────────────────────
+
+/**
+ * What the volunteer enters in the sign-up popup. `newPhone` is only filled
+ * when they have no saved phone and want to share one ('' otherwise).
+ * The Convex mutation must re-check everything (spots, one shift per event).
+ */
+export const shiftSignupSchema = z
+  .object({
+    shiftId: z.string().min(1, 'Please pick a shift').pipe(idSchema),
+    notes: z.string().trim().max(500, 'Please keep notes under 500 characters'),
+    sharePhone: z.boolean(),
+    newPhone: z
+      .string()
+      .trim()
+      .max(32)
+      .refine(
+        (value) => value === '' || phoneSchema.safeParse(value).success,
+        'Enter a phone number with area code, like 706-555-0100'
+      ),
+  })
+  .strict();
+
+// ─────────────────────────────────────────────────────────────
 // Auth Schemas
 // ─────────────────────────────────────────────────────────────
 
@@ -220,6 +245,7 @@ export type OrganizationMembershipInput = z.infer<typeof organizationMembershipS
 export type CreateEventInput = z.infer<typeof createEventSchema>;
 export type UpdateEventInput = z.infer<typeof updateEventSchema>;
 export type PaginationInput = z.infer<typeof paginationSchema>;
+export type ShiftSignupInput = z.infer<typeof shiftSignupSchema>;
 export type SignUpInput = z.infer<typeof signUpSchema>;
 export type SignInInput = z.infer<typeof signInSchema>;
 export type MagicLinkRequestInput = z.infer<typeof magicLinkRequestSchema>;

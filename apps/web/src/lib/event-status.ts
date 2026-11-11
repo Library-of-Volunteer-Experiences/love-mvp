@@ -12,8 +12,8 @@ export function shiftSpotsLeft(shift: ShiftData): number {
 /** Spots left across a role's shifts that haven't started yet. */
 export function roleOpenSpots(role: RoleData, now: number): number {
   return role.shifts
-    .filter((shift) => !hasShiftStarted(shift, now))
-    .reduce((total, shift) => total + shiftSpotsLeft(shift), 0);
+    .filter((shift) => !hasShiftStarted(shift, now)) // only count shifts that haven't started yet
+    .reduce((total, shift) => total + shiftSpotsLeft(shift), 0); // sum the spots left across those shifts
 }
 
 export function roleHasEnded(role: RoleData, now: number): boolean {
