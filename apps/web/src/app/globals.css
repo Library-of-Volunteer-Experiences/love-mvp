@@ -33,6 +33,9 @@
   --accent-foreground: oklch(0.25 0.0188 12.9242);
   --destructive: oklch(0.5112 0.2098 29.2339);
   --destructive-foreground: oklch(1 0 0);
+  /* Success (e.g. "You're signed up"): text/border on --success-soft is ~7:1. Light mode only (G5). */
+  --success: oklch(0.42 0.11 150);
+  --success-soft: oklch(0.96 0.035 150);
   --border: oklch(0.8015 0 0);
   --input: oklch(0.5999 0 0);
   --ring: oklch(0.4495 0.1602 11.8977);
@@ -147,6 +150,8 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
