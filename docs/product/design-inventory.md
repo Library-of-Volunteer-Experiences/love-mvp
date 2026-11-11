@@ -47,6 +47,29 @@ These affect everything below.
 | G9  | **Default event cover**    | What to show when an event has no cover photo (nonprofit logo? colored block with icon?)         |
 | G10 | **Default nonprofit logo** | What to show when there's no logo (initials? icon?)                                              |
 
+**Decided (2026-11-10):**
+
+- **G1–G3, G6:** keep the rose primary, Anek Latin + Instrument Serif (what `globals.css` loads),
+  18px base text, and Lucide icons everywhere.
+- **G4:** the italic serif "love" wordmark is the logo for now.
+- **G5:** light mode only for the MVP. A green `--success` / `--success-soft` token pair was added
+  for "You're signed up."
+- **G8:** on phones the signed-in navbar shows a labeled **Menu** button that opens a side sheet of
+  large links (`components/global/mobile-menu.tsx`).
+- **G9:** no cover → a soft rose block with the event's first cause icon
+  (`components/global/cover-image.tsx`).
+- **G10:** no logo → a circle with the nonprofit's initials
+  (`components/global/nonprofit-avatar.tsx`).
+- **Footer:** "Built for Fannin County" line, main page links, and a help email
+  (`SUPPORT_EMAIL` in `@love/shared` is a **placeholder** to replace before launch).
+- **Confirm dialogs:** destructive buttons are red and say exactly what happens ("Yes, cancel");
+  the safe choice ("Keep my spot") is focused first.
+- **Event page:** contained, rounded cover; "Open in Google Maps" link instead of a map image;
+  shifts are listed only in the role popup; role and sign-up popups are centered dialogs; the shift
+  picker uses large radio cards (full shifts greyed and unpickable); after signing up the popup
+  closes and focus moves to the green "You're signed up" box at the top of the Roles section.
+- **Follow button:** "Follow" / "Following ✓", with no hover swap to "Unfollow".
+
 ---
 
 ## 1. Global (`components/global/`)
