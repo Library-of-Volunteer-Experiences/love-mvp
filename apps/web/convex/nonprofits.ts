@@ -1,4 +1,4 @@
-import { v } from 'convex/values';
+import { ConvexError, v } from 'convex/values';
 import { action } from './_generated/server';
 
 export const lookupEin = action({
@@ -19,18 +19,18 @@ export const lookupEin = action({
   handler: async (_ctx, { ein }) => {
     const normalizedEin = ein.replace(/\D/g, '');
     if (normalizedEin.length !== 9) {
-      throw new Error('EIN must contain exactly 9 digits');
+      throw new ConvexError('EIN must contain exactly 9 digits');
     }
 
     const response = await fetch(
       `https://projects.propublica.org/nonprofits/api/v2/organizations/${normalizedEin}.json`
     );
     if (response.status === 404) return { status: 'not_found' as const };
-    if (!response.ok) throw new Error('Unable to look up EIN');
+    if (!response.ok) throw new ConvexError('Unable to look up EIN');
 
     const data: unknown = await response.json();
     if (typeof data !== 'object' || data === null || !('organization' in data)) {
-      throw new Error('Invalid EIN lookup response');
+      throw new ConvexError('Invalid EIN lookup response');
     }
     const organization = data.organization;
     if (typeof organization !== 'object' || organization === null) {
@@ -46,34 +46,23 @@ export const lookupEin = action({
       return { status: 'not_found' as const };
     }
     if (!('name' in organization) || typeof organization.name !== 'string') {
-      throw new Error('Invalid EIN lookup response');
+      throw new ConvexError('Invalid EIN lookup response');
     }
 
     // ProPublica's organization.subsection_code is the 501(c) subsection (3 means 501(c)(3)).
     if (!('subsection_code' in organization) || organization.subsection_code !== 3) {
       return { status: 'not_501c3' as const, name: organization.name };
     }
-    if (
-      !('address' in organization) ||
-      typeof organization.address !== 'string' ||
-      !('city' in organization) ||
-      typeof organization.city !== 'string' ||
-      !('state' in organization) ||
-      typeof organization.state !== 'string' ||
-      !('zipcode' in organization) ||
-      typeof organization.zipcode !== 'string'
-    ) {
-      throw new Error('Invalid EIN lookup response');
-    }
 
+    const text = (value: unknown) => (typeof value === 'string' ? value : '');
     return {
       status: 'ok' as const,
       ein: normalizedEin,
       name: organization.name,
-      street: organization.address,
-      city: organization.city,
-      state: organization.state,
-      zip: organization.zipcode,
+      street: text('adress' in organization ? organization.adress : null),
+      city: text('city' in organization ? organization.city : null),
+      state: text('state' in organization ? organization.state : null),
+      zip: text('zipcode' in organization ? organization.zipcode : null),
     };
   },
 });
